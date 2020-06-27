@@ -1,0 +1,12 @@
+<!doctype html>
+<title>Source abstracts</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<section class="content">
+
+ {% for title, abstract in source_abstracts %}
+    <h2>{{ title }}</h2>
+    <p>{{ abstract }}</p>
+	<br/>
+ {% endfor %}
+
+</section>

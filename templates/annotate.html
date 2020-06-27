@@ -1,0 +1,82 @@
+<!doctype html>
+<title>Annotate</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<section class="content">
+  <header>
+    {% block header %}
+    
+    {% endblock %}
+  </header>
+  
+  {% block content %}
+  <h2>Reference (<a href="/view_sources/{{uid}}" target=”_blank”>view sources</a>)</h2>
+
+  {{ reference }}
+
+  <br/><br/>
+
+  <h2>Prediction</h2>
+
+  {{ prediction }}
+
+<hr>
+<div class="wrap">
+ 
+  <form action="/save_annotation/{{uid}}" method="post">
+    <label class="statement">First we are asking you to assess the factuality of the summary text, with reference to the corresponding manually written summary. Does the generated summary:</label>
+    <ul class='likert'>
+      <li>
+        <input type="radio" name="likert_facts" value="1">
+        <label>Strongly disagrees with or contradicts the reference summary.</label>
+      </li>
+      <li>
+        <input type="radio" name="likert_facts" value="2">
+        <label>Moderately disagrees with the reference summary.</label>
+      </li>
+      <li>
+        <input type="radio" name="likert_facts" value="3">
+        <label>Partially agrees and partially disagrees with the reference summary</label>
+      </li>
+      <li>
+        <input type="radio" name="likert_facts" value="4">
+        <label>Moderately agrees with the reference summary</label>
+      </li>
+      <li>
+        <input type="radio" name="likert_facts" value="5">
+        <label>Strongly agrees with reference summary.
+</label>
+      </li>
+    </ul>
+    <label class="statement">Next we would now like you to assess the fluency of the text. For this assessment, you should ignore whether or not the scientific message is correct, and rate only the quality of the language. This text is:</label>
+    <ul class='likert'>
+      <li>
+        <input type="radio" name="likert_fluency" value="1">
+        <label>Impossible to understand</label>
+      </li>
+      <li>
+        <input type="radio" name="likert_fluency" value="2">
+        <label>Difficult to understand with major language errors</label>
+      </li>
+      <li>
+        <input type="radio" name="likert_fluency" value="3">
+        <label>Understandable, but with major language errors</label>
+      </li>
+      <li>
+        <input type="radio" name="likert_fluency" value="4">
+        <label>Easy to understand with minor language errors only</label>
+      </li>
+      <li>
+        <input type="radio" name="likert_fluency" value="5">
+        <label>Easy to understand with no language errors</label>
+      </li>
+    </ul>
+    
+    <div class="buttons">
+      <button class="clear">Clear</button>
+      <button class="submit">Submit</button>
+    </div>
+  </form>
+</div>
+
+  {% endblock %}
+</section>
