@@ -57,6 +57,7 @@ def save_annotation(uid):
     
     factuality_score = int(request.form['likert_facts'])
     fluency_score    = int(request.form['likert_fluency'])
+    relevancy_score  = int(request.form['likert_relevance'])
 
     with sqlite3.connect(db_path) as con:
         con.execute("""INSERT INTO label (generated_summary_id, label_type, score) VALUES (?, ?, ?);""",
@@ -64,6 +65,11 @@ def save_annotation(uid):
 
         con.execute("""INSERT INTO label (generated_summary_id, label_type, score) VALUES (?, ?, ?);""",
                                                         (uid, "fluency", fluency_score))
+
+
+        con.execute("""INSERT INTO label (generated_summary_id, label_type, score) VALUES (?, ?, ?);""",
+                                                        (uid, "relevance", relevancy_score))
+
         con.commit()
 
     return next()
