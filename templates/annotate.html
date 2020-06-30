@@ -9,13 +9,16 @@
   </header>
   
   {% block content %}
-  <h2>Reference (<a href="/view_sources/{{uid}}" target=”_blank”>view sources</a>)</h2>
 
+
+  <h2>Reference (<a href="/view_sources/{{uid}}" target=”_blank”>view sources</a>)</h2>
+ 
+  <h3><i>{{ review_title }}</i></h3>
   {{ reference }}
 
   <br/><br/>
 
-  <h2>Prediction</h2>
+  <h2>System Summary</h2>
 
   {{ prediction }}
 
@@ -23,7 +26,7 @@
 <div class="wrap">
  
   <form action="/save_annotation/{{uid}}" method="post">
-    <label class="statement">First we are asking you to assess the factuality of the summary text, with reference to the corresponding manually written summary. Does the generated summary:</label>
+    <label class="statement">First we are asking you to assess the factuality of the summary text, with reference to the corresponding manually written summary. The system summary ... </label>
     <ul class='likert'>
       <li>
         <input type="radio" name="likert_facts" value="1">
@@ -47,7 +50,7 @@
 </label>
       </li>
     </ul>
-    <label class="statement">Next we would now like you to assess the fluency of the text. For this assessment, you should ignore whether or not the scientific message is correct, and rate only the quality of the language. This text is:</label>
+    <label class="statement">Next we would now like you to assess the fluency of the text. For this assessment, you should ignore whether or not the scientific message is correct, and rate only the quality of the language. This text is ...</label>
     <ul class='likert'>
       <li>
         <input type="radio" name="likert_fluency" value="1">
@@ -78,5 +81,7 @@
   </form>
 </div>
 
+  <p>Identifier: {{ uid }}</p>
+  
   {% endblock %}
 </section>

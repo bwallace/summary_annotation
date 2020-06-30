@@ -8,20 +8,21 @@ app = Flask(__name__)
 
 db_path = "data/summaries.db"  
 
+
 @app.route('/')
 def hello():
     return next()
 
 def get_summaries_for_uid(uid) -> Tuple[str]:
-    # return (target, predicted) summary for this *prediction* uid.
+    # return (target, title, predicted) summary for this *prediction* uid.
     
     with sqlite3.connect(db_path) as con:
         cochrane_id, pred_summary = con.execute("""SELECT cochrane_id, summary FROM generated_summaries where uuid='{}';""".format(uid)).fetchone()
         # now get the reference summary
       
-        reference_summary = con.execute("""SELECT summary FROM target_summaries where cochrane_id='{}';""".format(cochrane_id)).fetchone()[0]
+        reference_summary, title = con.execute("""SELECT summary, title FROM target_summaries where cochrane_id='{}';""".format(cochrane_id)).fetchone()
         
-        return (reference_summary, pred_summary)
+        return (reference_summary, title, pred_summary)
 
 
 @app.route('/view_sources/<uid>')
@@ -35,8 +36,9 @@ def view_sources(uid):
 def annotate(uid):
     # uid is a unique identifier for a *generated*
     # summary. 
-    reference, prediction = get_summaries_for_uid(uid)
-    return render_template('annotate.html', uid=uid, reference=reference, prediction=prediction)
+    reference, review_title, prediction = get_summaries_for_uid(uid)
+    return render_template('annotate.html', uid=uid, review_title=review_title, 
+                            reference=reference, prediction=prediction)
 
 
 def next():
