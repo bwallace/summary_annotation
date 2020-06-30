@@ -17,12 +17,11 @@ def get_summaries_for_uid(uid) -> Tuple[str]:
     # return (target, title, predicted) summary for this *prediction* uid.
     
     with sqlite3.connect(db_path) as con:
-        cochrane_id, pred_summary = con.execute("""SELECT cochrane_id, summary FROM generated_summaries where uuid='{}';""".format(uid)).fetchone()
+        cochrane_id, pred_summary, system = con.execute("""SELECT cochrane_id, summary, system_id FROM generated_summaries where uuid='{}';""".format(uid)).fetchone()
         # now get the reference summary
-      
         reference_summary, title = con.execute("""SELECT summary, title FROM target_summaries where cochrane_id='{}';""".format(cochrane_id)).fetchone()
         
-        return (reference_summary, title, pred_summary)
+        return (reference_summary, title, system, pred_summary)
 
 
 @app.route('/view_sources/<uid>')
@@ -36,9 +35,9 @@ def view_sources(uid):
 def annotate(uid):
     # uid is a unique identifier for a *generated*
     # summary. 
-    reference, review_title, prediction = get_summaries_for_uid(uid)
+    reference, review_title, system, prediction = get_summaries_for_uid(uid)
     return render_template('annotate.html', uid=uid, review_title=review_title, 
-                            reference=reference, prediction=prediction)
+                            reference=reference, prediction=prediction, system=system)
 
 
 def next():
@@ -47,7 +46,7 @@ def next():
         # NOTE this is inefficient, but who cares for our case
         q_str = """SELECT uuid FROM generated_summaries WHERE NOT EXISTS (
                     SELECT * FROM label WHERE generated_summaries.uuid = label.generated_summary_id) 
-                    ORDER BY RANDOM() LIMIT 1;"""
+                    ORDER BY COCHRANE_ID, RANDOM() LIMIT 1;"""
         next_uuid = con.execute(q_str).fetchone()[0]
         return annotate(next_uuid)
 

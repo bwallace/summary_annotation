@@ -31,7 +31,6 @@ def add_references(reference_summary_path="../data/output_abs_title.csv"):
             import pdb; pdb.set_trace()
 
 
-        #if math.isnan(title):
         if isinstance(title, float):
             print("no title for {}!".format(reference_summary['Cochrane ID']))
             title = "(no title available)"
