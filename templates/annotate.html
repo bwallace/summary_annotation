@@ -46,7 +46,7 @@
       <li></li>
     </ul>
 
-    <label class="statement">First we are asking you to assess the factuality of the summary text, with reference to the corresponding manually written summary. The system summary ... </label>
+    <label class="statement">Now we ask that you assess the factuality of the summary text, with reference to the corresponding manually written summary. The system summary ... </label>
     <ul class='likert'>
       <li>
         <input type="radio" name="likert_facts" value="1">
@@ -75,11 +75,11 @@
     <ul class='likert'>
       <li>
         <input type="radio" name="likert_fluency" value="1">
-        Impossible to understand.
+        Very difficult to understand; clearly not written by a human.
       </li>
       <li>
         <input type="radio" name="likert_fluency" value="2">
-        Mostly understandable but not very plausible: It contradicts itself and/or contains incoherent statements.
+        Mostly understandable but not very plausible: It contradicts itself and/or contains blatently untrue or incoherent statements.
       </li>
       <li>
         <input type="radio" name="likert_fluency" value="3">
@@ -87,7 +87,7 @@
       </li>
       <li>
         <input type="radio" name="likert_fluency" value="4">
-        Easy to understand, and seems mostly plausible.
+        Easy to understand, and seems mostly plausible and internally consistent. Does not contain any odd or obviously incorrect text.
       </li>
       <li>
         <input type="radio" name="likert_fluency" value="5">
@@ -128,8 +128,9 @@
     </div>
   </form>
 </div>
-
-  <p><b>System</b>: {{ system }} <b>Identifier</b>: {{ uid }}</p>
+    
+  <p>You've provided {{ already_done }} labels!</p>
+  <p><!-- <b>System</b>: {{ system }} <--> <b>Identifier</b>: {{ uid }}</p>
 
   {% endblock %}
 </section>
