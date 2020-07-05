@@ -31,13 +31,23 @@ def view_sources(uid):
         sources = con.execute("""SELECT title, abstract FROM source_abstract WHERE cochrane_id='{}';""".format(cochrane_id)).fetchall()
         return render_template('show_sources.html', source_abstracts=sources)
 
+def get_n_labels():
+    with sqlite3.connect(db_path) as con:
+        q_str = """SELECT count(*) FROM label WHERE 1"""
+        return con.execute(q_str).fetchone()[0]
+
 @app.route('/annotate/<uid>')
 def annotate(uid):
     # uid is a unique identifier for a *generated*
     # summary. 
     reference, review_title, system, prediction = get_summaries_for_uid(uid)
+
+    # this is terrible but right now we collect 3 annotations per doc, so... yeah
+    n_done = str(get_n_labels()/3)
+
     return render_template('annotate.html', uid=uid, review_title=review_title, 
-                            reference=reference, prediction=prediction, system=system)
+                            reference=reference, prediction=prediction, system=system,
+                            already_done=n_done)
 
 
 def next():
@@ -55,9 +65,10 @@ def next():
 @app.route('/save_annotation/<uid>', methods = ['POST'])
 def save_annotation(uid):
     
-    factuality_score = int(request.form['likert_facts'])
-    fluency_score    = int(request.form['likert_fluency'])
     relevancy_score  = int(request.form['likert_relevance'])
+    factuality_score = int(request.form['likert_facts'])
+
+    fluency_score    = int(request.form['likert_fluency'])
 
     with sqlite3.connect(db_path) as con:
         con.execute("""INSERT INTO label (generated_summary_id, label_type, score) VALUES (?, ?, ?);""",

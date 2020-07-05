@@ -6,6 +6,19 @@
     {% block header %}
     
     {% endblock %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $( document ).ready(function() {
+          $("#semantic-plausibility").hide();
+
+          $("input:radio[name='likert_facts']").click(function() {
+            $("#relevance").fadeOut();
+            $("#semantic-plausibility").fadeIn();
+          });
+
+        });
+      
+    </script>
   </header>
   
   {% block content %}
@@ -27,73 +40,82 @@
 <div class="wrap">
  
   <form action="/save_annotation/{{uid}}" method="post">
+    <div id="relevance">
+      <label class="statement">Is the System Summary relevant to the topic <i>{{ review_title }}</i>?</label>
+        <ul class='likert'>
+        <li></li>
+        <li>
+          <input type="radio" name="likert_relevance" value="1">
+           Mostly not (e.g., focusses on different interventions or outcomes)
+        </li>
+        <li>
+          <input type="radio" name="likert_relevance" value="2">
+          Moderately on topic
+        </li>
+        <li>
+          <input type="radio" name="likert_relevance" value="3">
+          Explicitly addresses this topic.
+        </li>
+        <li></li>
+      </ul>
 
-    <label class="statement">Is the System Summary relevant to the topic <i>{{ review_title }}</i>?</label>
+      <label class="statement">Now we ask that you assess the factuality of the summary text, with reference to the corresponding manually written summary. The system summary ... </label>
+        <ul class='likert'>
+        <li>
+          <input type="radio" id="test_likert" name="likert_facts" value="1">
+          Strongly disagrees with or contradicts the reference summary.
+        </li>
+        <li>
+          <input type="radio" name="likert_facts" value="2">
+          Moderately disagrees with the reference summary.
+        </li>
+        <li>
+          <input type="radio" name="likert_facts" value="3">
+          Partially agrees and partially disagrees with the reference summary.
+        </li>
+        <li>
+          <input type="radio" name="likert_facts" value="4">
+          Moderately agrees with the reference summary.
+        </li>
+        <li>
+          <input type="radio" name="likert_facts" value="5">
+          Strongly agrees with reference summary.
+        </li>
+      </ul>
+    </div>
+    
+    <div id = "semantic-plausibility">
+      <label class="statement">Now we would now like you to assess the "semantic plausibility" of the text. This should be <i>independent of the reference review</i>. This text is ...</label>
       <ul class='likert'>
-      <li></li>
-      <li>
-        <input type="radio" name="likert_relevance" value="1">
-         Mostly not (e.g., focusses on different interventions or outcomes)
-      </li>
-      <li>
-        <input type="radio" name="likert_relevance" value="2">
-        Moderately on topic
-      </li>
-      <li>
-        <input type="radio" name="likert_relevance" value="3">
-        Explicitly addresses this topic.
-      </li>
-      <li></li>
-    </ul>
+        <li>
+          <input type="radio" name="likert_fluency" value="1">
+          Very difficult to understand; clearly not written by a human.
+        </li>
+        <li>
+          <input type="radio" name="likert_fluency" value="2">
+          Mostly understandable but not very plausible: It contradicts itself and/or contains blatently untrue or incoherent statements.
+        </li>
+        <li>
+          <input type="radio" name="likert_fluency" value="3">
+          Understandable, but contains some major language errors and/or semantic oddities.
+        </li>
+        <li>
+          <input type="radio" name="likert_fluency" value="4">
+          Easy to understand, and seems mostly plausible and internally consistent. Does not contain any odd or obviously incorrect text.
+        </li>
+        <li>
+          <input type="radio" name="likert_fluency" value="5">
+          I cannot readily distinguish this from a summary that might have been written by an expert reviewer.
+        </li>
+      </ul> 
 
-    <label class="statement">Now we ask that you assess the factuality of the summary text, with reference to the corresponding manually written summary. The system summary ... </label>
-    <ul class='likert'>
-      <li>
-        <input type="radio" name="likert_facts" value="1">
-        Strongly disagrees with or contradicts the reference summary.
-      </li>
-      <li>
-        <input type="radio" name="likert_facts" value="2">
-        Moderately disagrees with the reference summary.
-      </li>
-      <li>
-        <input type="radio" name="likert_facts" value="3">
-        Partially agrees and partially disagrees with the reference summary.
-      </li>
-      <li>
-        <input type="radio" name="likert_facts" value="4">
-        Moderately agrees with the reference summary.
-      </li>
-      <li>
-        <input type="radio" name="likert_facts" value="5">
-        Strongly agrees with reference summary.
-      </li>
-  </ul>
-    
-    
-    <label class="statement">Next we would now like you to assess the "semantic plausibility" of the text. This should be <i>independent of the reference review</i>. This text is ...</label>
-    <ul class='likert'>
-      <li>
-        <input type="radio" name="likert_fluency" value="1">
-        Very difficult to understand; clearly not written by a human.
-      </li>
-      <li>
-        <input type="radio" name="likert_fluency" value="2">
-        Mostly understandable but not very plausible: It contradicts itself and/or contains blatently untrue or incoherent statements.
-      </li>
-      <li>
-        <input type="radio" name="likert_fluency" value="3">
-        Understandable, but contains some major language errors and/or semantic oddities.
-      </li>
-      <li>
-        <input type="radio" name="likert_fluency" value="4">
-        Easy to understand, and seems mostly plausible and internally consistent. Does not contain any odd or obviously incorrect text.
-      </li>
-      <li>
-        <input type="radio" name="likert_fluency" value="5">
-        I cannot readily distinguish this from a summary that might have been written by an expert reviewer.
-      </li>
-    </ul> 
+
+      <div class="buttons">
+        <button class="clear">Clear</button>
+        <button class="submit">Submit</button>
+      </div>
+
+    </div>
 
    
    <!--
@@ -121,16 +143,14 @@
       </li>
     </ul> 
     -->
-    
-    <div class="buttons">
-      <button class="clear">Clear</button>
-      <button class="submit">Submit</button>
-    </div>
+
   </form>
 </div>
     
   <p>You've provided {{ already_done }} labels!</p>
   <p><!-- <b>System</b>: {{ system }} <--> <b>Identifier</b>: {{ uid }}</p>
+
+
 
   {% endblock %}
 </section>
