@@ -9,11 +9,19 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $( document ).ready(function() {
-          $("#semantic-plausibility").hide();
+          //$("#semantic-plausibility").hide();
+          $("#reference-summary").hide();
+          $("#facts").hide();
+          $("#buttons-div").hide();
 
-          $("input:radio[name='likert_facts']").click(function() {
+          //$("input:radio[name='likert_facts']").click(function() {
+          $("input:radio[name='likert_fluency']").click(function() {
             $("#relevance").fadeOut();
-            $("#semantic-plausibility").fadeIn();
+            $("#semantic-plausibility").fadeOut();
+
+            $("#reference-summary").fadeIn();
+            $("#facts").show();
+            $("#buttons-div").show();
           });
 
         });
@@ -24,12 +32,15 @@
   {% block content %}
 
 
-  <h2>Reference (<a href="/view_sources/{{uid}}" target=”_blank”>view sources</a>)</h2>
+  <div id="reference-summary">
+    <h2>Reference (<a href="/view_sources/{{uid}}" target=”_blank”>view sources</a>)</h2>
  
-  <h3><i>{{ review_title }}</i></h3>
-  {{ reference }}
+    <h3><i>{{ review_title }}</i></h3>
+    {{ reference }}
 
-  <br/><br/>
+    <br/><br/>
+  </div>
+
 
   <h2>System Summary</h2>
 
@@ -40,6 +51,7 @@
 <div class="wrap">
  
   <form action="/save_annotation/{{uid}}" method="post">
+
     <div id="relevance">
       <label class="statement">Is the System Summary relevant to the topic <i>{{ review_title }}</i>?</label>
         <ul class='likert'>
@@ -57,8 +69,10 @@
           Explicitly addresses this topic.
         </li>
         <li></li>
-      </ul>
+        </ul>
+    </div>
 
+    <div id="facts">
       <label class="statement">Now we ask that you assess the factuality of the summary text, with reference to the corresponding manually written summary. The system summary ... </label>
         <ul class='likert'>
         <li>
@@ -85,37 +99,37 @@
     </div>
     
     <div id = "semantic-plausibility">
-      <label class="statement">Now we would now like you to assess the "semantic plausibility" of the text. This should be <i>independent of the reference review</i>. This text is ...</label>
-      <ul class='likert'>
-        <li>
-          <input type="radio" name="likert_fluency" value="1">
-          Very difficult to understand; clearly not written by a human.
-        </li>
-        <li>
-          <input type="radio" name="likert_fluency" value="2">
-          Mostly understandable but not very plausible: It contradicts itself and/or contains blatently untrue or incoherent statements.
-        </li>
-        <li>
-          <input type="radio" name="likert_fluency" value="3">
-          Understandable, but contains some major language errors and/or semantic oddities.
-        </li>
-        <li>
-          <input type="radio" name="likert_fluency" value="4">
-          Easy to understand, and seems mostly plausible and internally consistent. Does not contain any odd or obviously incorrect text.
-        </li>
-        <li>
-          <input type="radio" name="likert_fluency" value="5">
-          I cannot readily distinguish this from a summary that might have been written by an expert reviewer.
-        </li>
-      </ul> 
+        <label class="statement">Now we would now like you to assess the "semantic plausibility" of the text. This should be <i>independent of the reference review</i>. This text is ...</label>
+        <ul class='likert'>
+          <li>
+            <input type="radio" name="likert_fluency" value="1">
+            Very difficult to understand; clearly not written by a human.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency" value="2">
+            Mostly understandable but not very plausible: It contradicts itself and/or contains blatently untrue or incoherent statements.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency" value="3">
+            Understandable, but contains some major language errors and/or semantic oddities.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency" value="4">
+            Easy to understand, and seems mostly plausible and internally consistent. Does not contain any odd or obviously incorrect text.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency" value="5">
+            I cannot readily distinguish this from a summary that might have been written by an expert reviewer.
+          </li>
+        </ul> 
+      </div>
 
-
-      <div class="buttons">
+      <div id = "buttons-div" class="buttons">
         <button class="clear">Clear</button>
         <button class="submit">Submit</button>
       </div>
 
-    </div>
+ 
 
    
    <!--
