@@ -2,11 +2,20 @@
 import math 
 
 import pandas as pd 
+import json 
 
 import sqlite3
 
 db_path = "../data/summaries.db"  
-cochrane_ids_to_titles = pd.read_csv("../data/cdnos_to_titles.csv")#cochrane_ids_to_titles.csv")
+cochrane_ids_to_titles_d = json.load(open("../data/cdno_title.json")) #pd.read_json("../data/cdno_title.json") #pd.read_csv("../data/cdnos_to_titles.csv")#cochrane_ids_to_titles.csv")
+c_ids, titles = [], []
+for c_id, title in cochrane_ids_to_titles_d.items():
+    c_ids.append(c_id)
+    titles.append(title)
+
+
+cochrane_ids_to_titles = pd.DataFrame({"ReviewID":c_ids, 
+                                       "Cochrane_Title":titles})
 
 def connect_to_db():
     conn = sqlite3.connect(db_path)
@@ -50,8 +59,6 @@ def add_sources(sources_path="../data/sources.json"):
     #sources_df = pd.read_csv(sources_path)
     sources_df = pd.read_json(sources_path)
     
-    #failures = 0 
-
     for cochrane_id, review_sources in sources_df.iterrows():
 
         titles = review_sources["Title"]
@@ -86,9 +93,25 @@ add_references()
 #add_system_outputs("BART-XSUM-FT_abs-abs_title", "../data/output_XSUM-FT_abs-abs_title.csv")
 
 #add_system_outputs("BART-none-abs-title", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_abs_title_1024.csv")
-add_system_outputs("XSUM-none-abs-title", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_abs_title_xsum.csv")
-add_system_outputs("XSUM-FT_abs-abs-title", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-abs_title.csv")
-add_system_outputs("XSUM-FT_abs-decorated-abs-title", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-Decorated_input.csv")
+
+# just XSUM
+add_system_outputs("XSUM-none-abs_title", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-None-abs_title.csv")
+
+# XSUM + PMC pre-training 
+add_system_outputs("XSUM-FT_abs-abs_title", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-abs_title.csv")
+
+# XSUM + PMC pre-training + pl decoration
+add_system_outputs("XSUM-FT_abs-abs_title_decorated_pl", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-Decorated_input.csv")
+
+# XSUM + PMC pre-training + sort inputs by RoB*N
+add_system_outputs("XSUM-FT_abs-abs_title_decorated_pl", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-robXss_sorted_input.csv")
+
+# XSUM + PMC pre-training + sort inputs by RoB*N + pl decoration
+add_system_outputs("XSUM-FT_abs-abs_title_decorated_pl", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-robXss_sorted_input_dec_pl.csv")
+
+
+
+#add_system_outputs("XSUM-FT_abs-abs_title_decorated_plPICOsign", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-decorated_input_plPICOsign.csv")
 
 add_sources()
 
