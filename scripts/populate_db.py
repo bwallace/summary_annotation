@@ -95,19 +95,19 @@ add_references()
 #add_system_outputs("BART-none-abs-title", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_abs_title_1024.csv")
 
 # just XSUM
-add_system_outputs("XSUM-none-abs_title", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-None-abs_title.csv")
+add_system_outputs("XSUM-None-abs_title", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-None-abs_title.csv")
 
 # XSUM + PMC pre-training 
 add_system_outputs("XSUM-FT_abs-abs_title", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-abs_title.csv")
 
 # XSUM + PMC pre-training + pl decoration
-add_system_outputs("XSUM-FT_abs-abs_title_decorated_pl", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-Decorated_input.csv")
+add_system_outputs("XSUM-FT_abs-Decorated_input", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-Decorated_input.csv")
 
 # XSUM + PMC pre-training + sort inputs by RoB*N
-add_system_outputs("XSUM-FT_abs-abs_title_decorated_pl", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-robXss_sorted_input.csv")
+add_system_outputs("XSUM-FT_abs-robXss_sorted_input", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-robXss_sorted_input.csv")
 
 # XSUM + PMC pre-training + sort inputs by RoB*N + pl decoration
-add_system_outputs("XSUM-FT_abs-abs_title_decorated_pl", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-robXss_sorted_input_dec_pl.csv")
+add_system_outputs("XSUM-FT_abs-robXss_sorted_input_dec_pl", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-robXss_sorted_input_dec_pl.csv")
 
 
 

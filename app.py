@@ -1,6 +1,6 @@
 from typing import Dict, Tuple, Sequence
 
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, url_for, redirect
 import json 
 import sqlite3
 
@@ -62,6 +62,7 @@ def next():
 
 
 
+
 @app.route('/save_annotation/<uid>', methods = ['POST'])
 def save_annotation(uid):
     
@@ -83,4 +84,5 @@ def save_annotation(uid):
 
         con.commit()
 
-    return next()
+    #return next()
+    return redirect(url_for('hello'))
