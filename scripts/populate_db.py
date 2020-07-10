@@ -1,9 +1,11 @@
 
 import math 
+import string 
+import re
 
-import pandas as pd 
 import json 
 
+import pandas as pd 
 import sqlite3
 
 db_path = "../data/summaries.db"  
@@ -16,6 +18,11 @@ for c_id, title in cochrane_ids_to_titles_d.items():
 
 cochrane_ids_to_titles = pd.DataFrame({"ReviewID":c_ids, 
                                        "Cochrane_Title":titles})
+
+# it is sometimes hard to read the cochrane main findings due to 
+# abbreviations which were introduced earlier in the same abstract
+# (but not in the main findings); so we expand these here.
+abbrevs = json.load(open("../data/cdno_abbrevs.json"))
 
 def connect_to_db():
     conn = sqlite3.connect(db_path)
@@ -32,31 +39,54 @@ def add_references(reference_summary_path="../data/output_abs_title.csv"):
     for i, reference_summary in references_df.iterrows():
 
         target = reference_summary["Clean_Summary"]
+        c_id = reference_summary['Cochrane ID']
         try:
-            title = cochrane_ids_to_titles[cochrane_ids_to_titles["ReviewID"] == reference_summary['Cochrane ID']]['Cochrane_Title'].values[0]
+            title = cochrane_ids_to_titles[cochrane_ids_to_titles["ReviewID"] == c_id]['Cochrane_Title'].values[0]
         except:
             print("whoops.")
-            print(reference_summary['Cochrane ID'])
+            print(c_id)
             import pdb; pdb.set_trace()
 
 
         if isinstance(title, float):
-            print("no title for {}!".format(reference_summary['Cochrane ID']))
+            print("no title for {}!".format(c_id))
             title = "(no title available)"
 
- 
+    
+        target = expand_abbrevs(target, c_id)
+        
         c.execute("""INSERT INTO target_summaries (uuid, cochrane_id, title, summary) VALUES (?, ?, ?, ?)""",
-                                                        (i, reference_summary['Cochrane ID'], 
+                                                        (i, c_id, 
                                                         title, target))
 
     conn.commit()
     conn.close()
 
 
+def expand_abbrevs(abstract, cdno):
+    expanded = abstract
+    for abbrev, expansion in abbrevs[cdno].items():
+        # this is very naive but hopefully does the trick
+        
+        #expanded = " ".join([replacement_str if t.strip(string.punctuation) == abbrev else t for t in expanded.split(" ")])
+
+        replacement_str = "{} ({})".format(abbrev, expansion)
+        expanded = re.sub(r"\b{}\b".format(abbrev), replacement_str, expanded)
+
+        # try to handle, e.g., "RCTs" so that we also catch "RCT"
+        if abbrev.endswith("s") and expansion.endswith("s"):
+            replacement_str = "{} ({})".format(abbrev[:-1], expansion[:-1])
+            expanded = re.sub(r"\b{}\b".format(abbrev[:-1]), replacement_str, expanded)
+
+    #print (abbrevs[cdno].items())
+    #print (expanded)
+    #print ("\n")
+    return expanded
+
+
 def add_sources(sources_path="../data/sources.json"):
     conn, c = connect_to_db()
 
-    #sources_df = pd.read_csv(sources_path)
     sources_df = pd.read_json(sources_path)
     
     for cochrane_id, review_sources in sources_df.iterrows():

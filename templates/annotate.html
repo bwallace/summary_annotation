@@ -31,9 +31,14 @@
   
   {% block content %}
 
+  <h2>System Summary</h2>
 
-  <div id="reference-summary">
-    <h2>Reference (<a href="/view_sources/{{uid}}" target=”_blank”>view sources</a>)</h2>
+  {{ prediction }}
+
+  <br/><br/>
+  <div id="reference-summary" style="border:2px dotted black;">
+    <!-- not showing link to sources for now. -->
+    <h2>Reference <!-- (<a href="/view_sources/{{uid}}" target=”_blank”>view sources</a>) --></h2> 
  
     <h3><i>{{ review_title }}</i></h3>
     {{ reference }}
@@ -41,10 +46,6 @@
     <br/><br/>
   </div>
 
-
-  <h2>System Summary</h2>
-
-  {{ prediction }}
 
 <br/><br/>
 <hr>
@@ -115,7 +116,7 @@
           </li>
           <li>
             <input type="radio" name="likert_fluency" value="4">
-            Easy to understand, and seems mostly plausible and internally consistent. Does not contain any odd or obviously incorrect text.
+            Easy to understand, and seems mostly plausible and internally consistent. Contains some minor errors, but no major oddities or obviously incorrect text.
           </li>
           <li>
             <input type="radio" name="likert_fluency" value="5">

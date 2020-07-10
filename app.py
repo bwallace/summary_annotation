@@ -43,7 +43,7 @@ def annotate(uid):
     reference, review_title, system, prediction = get_summaries_for_uid(uid)
 
     # this is terrible but right now we collect 3 annotations per doc, so... yeah
-    n_done = str(get_n_labels()/3)
+    n_done = str(int(get_n_labels()/3))
 
     return render_template('annotate.html', uid=uid, review_title=review_title, 
                             reference=reference, prediction=prediction, system=system,
