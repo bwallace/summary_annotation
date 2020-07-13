@@ -6,7 +6,7 @@ import sqlite3
 
 app = Flask(__name__)
 
-db_path = "data/summaries.db"  
+db_path = "data/summaries_subset.db"  
 
 
 @app.route('/')
@@ -57,8 +57,12 @@ def next():
         q_str = """SELECT uuid FROM generated_summaries WHERE NOT EXISTS (
                     SELECT * FROM label WHERE generated_summaries.uuid = label.generated_summary_id) 
                     ORDER BY COCHRANE_ID, RANDOM() LIMIT 1;"""
-        next_uuid = con.execute(q_str).fetchone()[0]
-        return annotate(next_uuid)
+
+
+        next_uuid = con.execute(q_str).fetchone()
+        if next_uuid is None:
+            return render_template("all_done.html")
+        return annotate(next_uuid[0])
 
 
 

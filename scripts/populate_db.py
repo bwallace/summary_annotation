@@ -139,7 +139,7 @@ add_system_outputs("XSUM-FT_abs-robXss_sorted_input", "/Users/byronwallace/code/
 # XSUM + PMC pre-training + sort inputs by RoB*N + pl decoration
 add_system_outputs("XSUM-FT_abs-robXss_sorted_input_dec_pl", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-robXss_sorted_input_dec_pl.csv")
 
-
+# CD004334 only has 3 ???!!!!
 
 #add_system_outputs("XSUM-FT_abs-abs_title_decorated_plPICOsign", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-decorated_input_plPICOsign.csv")
 
