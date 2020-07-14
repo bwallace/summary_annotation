@@ -6,7 +6,7 @@ import sqlite3
 
 app = Flask(__name__)
 
-db_path = "data/summaries.db"  
+db_path = "data/summaries_pilot.db"  
 
 
 @app.route('/')
@@ -43,7 +43,8 @@ def annotate(uid):
     reference, review_title, system, prediction = get_summaries_for_uid(uid)
 
     # this is terrible but right now we collect 3 annotations per doc, so... yeah
-    n_done = str(int(get_n_labels()/3))
+    n_labels_per_doc = 4
+    n_done = str(int(get_n_labels()/n_labels_per_doc))
 
     return render_template('annotate.html', uid=uid, review_title=review_title, 
                             reference=reference, prediction=prediction, system=system,
