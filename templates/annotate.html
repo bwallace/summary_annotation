@@ -14,12 +14,18 @@
           $("#facts").hide();
           $("#buttons-div").hide();
 
+          $("#direction").hide();
+          $("#facts").hide();
+          $("#buttons-div").hide();
+
           //$("input:radio[name='likert_facts']").click(function() {
           $("input:radio[name='likert_fluency']").click(function() {
             $("#relevance").fadeOut();
             $("#semantic-plausibility").fadeOut();
 
+
             $("#reference-summary").fadeIn();
+            $("#direction").show();
             $("#facts").show();
             $("#buttons-div").show();
           });
@@ -73,8 +79,39 @@
         </ul>
     </div>
 
+    <div id="direction">
+      <label class="statement">In the reference summary, characterize the authors' conclusion regarding the comparative effect of the main intervention(s) of interest, with respect to the outcome(s) summarized here. The summary concludes that the main intervention(s) ...</label>
+        <ul class='likert'>
+        <!-- <li></li> -->
+ 
+        <li>
+          <input type="radio" name="likert_direction" value="-1">
+            Was harmful.
+        </li>
+
+        <li>
+          <input type="radio" name="likert_direction" value="0">
+          Had no effect.
+        </li>
+        
+        <li>
+          <input type="radio" name="likert_direction" value="1">
+         Was beneficial. 
+        </li>
+        
+        <li></li>
+
+        <li>
+          <input type="radio" name="likert_direction" value="2">
+         Could not come to a conclusion due to a lack of relevant evidence.
+        </li>
+
+        <li></li>
+        </ul>
+    </div>
+
     <div id="facts">
-      <label class="statement">Now we ask that you assess the factuality of the summary text, with reference to the corresponding manually written summary. The system summary ... </label>
+      <label class="statement">Now we ask that you assess the factuality of the system summary text, with reference to the corresponding manually written summary. The system summary ... </label>
         <ul class='likert'>
         <li>
           <input type="radio" id="test_likert" name="likert_facts" value="1">
@@ -99,6 +136,8 @@
       </ul>
     </div>
     
+
+
     <div id = "semantic-plausibility">
         <label class="statement">Now we would now like you to assess the "semantic plausibility" of the text (without regard for the reference review or source abstracts). This text is ...</label>
         <ul class='likert'>

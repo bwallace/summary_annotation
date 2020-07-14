@@ -6,7 +6,7 @@ import sqlite3
 
 app = Flask(__name__)
 
-db_path = "data/summaries_subset.db"  
+db_path = "data/summaries.db"  
 
 
 @app.route('/')
@@ -74,6 +74,7 @@ def save_annotation(uid):
     factuality_score = int(request.form['likert_facts'])
 
     fluency_score    = int(request.form['likert_fluency'])
+    direction_score    = int(request.form['likert_direction'])
 
     with sqlite3.connect(db_path) as con:
         con.execute("""INSERT INTO label (generated_summary_id, label_type, score) VALUES (?, ?, ?);""",
@@ -85,6 +86,9 @@ def save_annotation(uid):
 
         con.execute("""INSERT INTO label (generated_summary_id, label_type, score) VALUES (?, ?, ?);""",
                                                         (uid, "relevance", relevancy_score))
+
+        con.execute("""INSERT INTO label (generated_summary_id, label_type, score) VALUES (?, ?, ?);""",
+                                                        (uid, "direction", direction_score))
 
         con.commit()
 
