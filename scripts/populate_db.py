@@ -117,31 +117,23 @@ def add_system_outputs(sys_id, data_path):
     conn.close()
 
 
-add_references()
-#add_system_outputs("BART-none-abs-title", "../data/output_abs_title.csv")
-#add_system_outputs("BART-none-abs_title", "../data/output_abs_title.csv")
-#add_system_outputs("BART-XSUM-FT_abs-abs_title", "../data/output_XSUM-FT_abs-abs_title.csv")
+models = ["XSUM-None-abs_title", # just XSUM
+          "XSUM-FT_abs-abs_title", # XSUM + PMC pre-training 
+          "XSUM-FT_abs-decorated_input_plPICO", # XSUM + PMC pre-training + decorated inputs
+          "XSUM-FT_abs-robXss_sorted_input", # XSUM + PMC pre-training + sort by N * RoB
+          "XSUM-FT_abs-robXss_sorted_input_dec_plPICO" # XSUM + PMC pre-training + decorated inputs + sort by N * RoB
+]
 
-#add_system_outputs("BART-none-abs-title", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_abs_title_1024.csv")
+import os 
+base_dir = "/Users/byronwallace/code/PubMed_Summary/Evaluation/minimum_length_65/"
 
-# just XSUM
-add_system_outputs("XSUM-None-abs_title", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-None-abs_title.csv")
+# first add references; note that it doesn't really matter what output file you point
+# to here; any will do since the targets (references) are the same anyway.
+reference_path = os.path.join(base_dir, "output_"+models[0]+".csv")
+add_references(reference_path)
 
-# XSUM + PMC pre-training 
-add_system_outputs("XSUM-FT_abs-abs_title", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-abs_title.csv")
-
-# XSUM + PMC pre-training + pl decoration
-add_system_outputs("XSUM-FT_abs-Decorated_input", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-Decorated_input.csv")
-
-# XSUM + PMC pre-training + sort inputs by RoB*N
-add_system_outputs("XSUM-FT_abs-robXss_sorted_input", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-robXss_sorted_input.csv")
-
-# XSUM + PMC pre-training + sort inputs by RoB*N + pl decoration
-add_system_outputs("XSUM-FT_abs-robXss_sorted_input_dec_pl", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-robXss_sorted_input_dec_pl.csv")
-
-# CD004334 only has 3 ???!!!!
-
-#add_system_outputs("XSUM-FT_abs-abs_title_decorated_plPICOsign", "/Users/byronwallace/code/PubMed_Summary/Evaluation/output_XSUM-FT_abs-decorated_input_plPICOsign.csv")
+for m in models: 
+    add_system_outputs(m, os.path.join(base_dir, "output_"+m+".csv"))
 
 add_sources()
 
