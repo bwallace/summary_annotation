@@ -1,18 +1,23 @@
 <!doctype html>
 <title>Annotate</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}">
+
 <section class="content">
+
   <header>
     {% block header %}
     
     {% endblock %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+        mouseXPosition = 0;
         $( document ).ready(function() {
           //$("#semantic-plausibility").hide();
           $("#reference-summary").hide();
           $("#facts").hide();
           $("#buttons-div").hide();
+          $("#Sentence-highlight").hide();
+          
 
           $("#direction").hide();
           $("#facts").hide();
@@ -26,9 +31,145 @@
 
             $("#reference-summary").fadeIn();
             $("#direction").show();
+            $("#Sentence-highlight").show();
             $("#facts").show();
             $("#buttons-div").show();
+
+
+            $("#system-summary").mousedown(function(e1) {
+              mouseXPosition = e1.pageX; //register the mouse down position
+              
+            });
+
+            $("#system-summary").mouseup(function(e2) {
+              var highlighted = false;
+              var selection = window.getSelection();
+              var selectedText = selection.toString();
+              
+              var startPoint = window.getSelection().getRangeAt(0).startOffset;
+              var endPoint = window.getSelection().getRangeAt(0).endOffset;
+              var anchorTag = selection.anchorNode.parentNode;
+              
+              var focusTag = selection.focusNode.parentNode;
+              
+              if ((e2.pageX - mouseXPosition) < 0) {
+                focusTag = selection.anchorNode.parentNode;
+                anchorTag = selection.focusNode.parentNode;
+              }
+              if (selectedText.length === (endPoint - startPoint)) {
+                highlighted = true;
+
+                if (anchorTag.className !== "highlight") 
+                {
+                    highlightSelection();
+                } 
+                else 
+                {
+                  var afterText = selectedText + "<span class = 'highlight'>" + anchorTag.innerHTML.substr(endPoint) + "</span>";
+                  anchorTag.innerHTML = anchorTag.innerHTML.substr(0, startPoint);
+                  anchorTag.insertAdjacentHTML('afterend', afterText);
+                }
+
+              } 
+              else 
+              {
+                if (anchorTag.className !== "highlight" && focusTag.className !== "highlight") 
+                {
+                  highlightSelection();
+                  highlighted = true;
+                }
+
+              }
+
+              if (anchorTag.className === "highlight" && focusTag.className === 'highlight' && !highlighted) {
+                highlighted = true;
+
+                var afterHtml = anchorTag.innerHTML.substr(startPoint);
+                var outerHtml = selectedText.substr(afterHtml.length, selectedText.length - endPoint - afterHtml.length);
+                var anchorInnerhtml = anchorTag.innerHTML.substr(0, startPoint);
+                var focusInnerHtml = focusTag.innerHTML.substr(endPoint);
+                var focusBeforeHtml = focusTag.innerHTML.substr(0, endPoint);
+                selection.deleteFromDocument();
+                anchorTag.innerHTML = anchorInnerhtml;
+                focusTag.innerHTml = focusInnerHtml;
+                var anchorafterHtml = afterHtml + outerHtml + focusBeforeHtml;
+                anchorTag.insertAdjacentHTML('afterend', anchorafterHtml);
+
+
+              }
+
+              if (anchorTag.className === "highlight" && !highlighted) {
+                highlighted = true;
+                var Innerhtml = anchorTag.innerHTML.substr(0, startPoint);
+                var afterHtml = anchorTag.innerHTML.substr(startPoint);
+                var outerHtml = selectedText.substr(afterHtml.length, selectedText.length);
+                selection.deleteFromDocument();
+                anchorTag.innerHTML = Innerhtml;
+                anchorTag.insertAdjacentHTML('afterend', afterHtml + outerHtml);
+              }
+
+              if (focusTag.className === 'highlight' && !highlighted) {
+                highlighted = true;
+                var beforeHtml = focusTag.innerHTML.substr(0, endPoint);
+                var outerHtml = selectedText.substr(0, selectedText.length - beforeHtml.length);
+                selection.deleteFromDocument();
+                focusTag.innerHTml = focusTag.innerHTML.substr(endPoint);
+                outerHtml += beforeHtml;
+                focusTag.insertAdjacentHTML('beforebegin', outerHtml);
+              }
+              if (!highlighted) {
+                highlightSelection();
+              }
+              $('.highlight').each(function() {
+                if ($(this).html() == '') {
+                  $(this).remove();
+                }
+              });
+              selection.removeAllRanges();
+              
+              document.getElementsByClassName("highlight")[0].innerHTML;
+              obj=document.getElementsByClassName("highlight")
+              var count= Object.keys(obj).length
+              //console.log(typeof document.getElementsByClassName("highlight"))
+              var sent = []
+              for (i = 0; i < count; i++)
+              {
+              sent[i] = obj[i].innerHTML
+              //console.log(obj[i].innerHTML);
+              }
+              //console.log(count)
+              document.getElementById("sent").value = sent;
+              
+            });
           });
+
+          function highlightSelection() {
+            var selection;
+           
+            if (window.getSelection)
+              selection = window.getSelection();
+            else if (typeof document.selection != "undefined")
+              selection = document.selection;
+
+            //Get a the selected content, in a range object
+            var range = selection.getRangeAt(0);
+
+            //If the range spans some text, and inside a tag, set its css class.
+            if (range && !selection.isCollapsed) {
+              //console.log("Here1")
+              if (selection.anchorNode.parentNode == selection.focusNode.parentNode) {
+                var span = document.createElement('span');
+                //console.log("here2")
+                span.className = 'highlight';
+                span.textContent = selection.toString();
+                //console.log(span.textContent)
+                //selectedString = selectedString + "\t" + span.textContent
+                selection.deleteFromDocument();
+                range.insertNode(span);
+                //                        range.surroundContents(span);
+              }
+            }
+          }
 
         });
       
@@ -36,11 +177,11 @@
   </header>
   
   {% block content %}
+  <div id="system-summary" >
+    <h2>System Summary</h2>
 
-  <h2>System Summary</h2>
-
-  {{ prediction }}
-
+    {{ prediction }}
+  </div>
   <br/><br/>
   <div id="reference-summary" style="border:2px dotted black;">
     <!-- not showing link to sources for now. -->
@@ -164,12 +305,16 @@
         </ul> 
       </div>
 
+      <div id = "Sentence-highlight">
+        <label class="statement">Highlight factual errors in the sytem summary. Run the cursor over the erroneous portion to highlight. </label>
+        <input type="text" id="sent" name="sent" style="font-size:18pt;height:30px; width:900px;"></input>
+      </div>
+   
       <div id = "buttons-div" class="buttons">
         <button class="clear">Clear</button>
         <button class="submit">Submit</button>
       </div>
-
- 
+    
 
    
    <!--
@@ -197,7 +342,7 @@
       </li>
     </ul> 
     -->
-
+     
   </form>
 </div>
     
