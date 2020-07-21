@@ -6,7 +6,7 @@ import sqlite3
 
 app = Flask(__name__)
 
-db_path = "data/summaries_pilot.db"  
+db_path = "data/summaries.db"  
 
 
 @app.route('/')
@@ -42,7 +42,7 @@ def annotate(uid):
     # summary. 
     reference, review_title, system, prediction = get_summaries_for_uid(uid)
 
-    # this is terrible but right now we collect 3 annotations per doc, so... yeah
+        # this is terrible but right now we collect 4 annotations per doc, so... yeah
     n_labels_per_doc = 4
     n_done = str(int(get_n_labels()/n_labels_per_doc))
 
@@ -76,6 +76,8 @@ def save_annotation(uid):
 
     fluency_score    = int(request.form['likert_fluency'])
     direction_score    = int(request.form['likert_direction'])
+    sent= request.form['sent']
+    print(sent)
 
     with sqlite3.connect(db_path) as con:
         con.execute("""INSERT INTO label (generated_summary_id, label_type, score) VALUES (?, ?, ?);""",
@@ -90,6 +92,9 @@ def save_annotation(uid):
 
         con.execute("""INSERT INTO label (generated_summary_id, label_type, score) VALUES (?, ?, ?);""",
                                                         (uid, "direction", direction_score))
+        con.execute("""INSERT INTO label (generated_summary_id, label_type, score) VALUES (?, ?, ?);""",
+                                                        (uid, "highlights", sent))
+        
 
         con.commit()
 
