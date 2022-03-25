@@ -1,0 +1,200 @@
+<!doctype html>
+<title>Annotate</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<section class="content">
+  <header>
+    {% block header %}
+    
+    {% endblock %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $( document ).ready(function() {
+            $("#reference-summary").show();
+            $("#direction").show();
+            
+            $("#buttons-div").show();
+            $("#buttons-back").show();
+          
+
+        });
+      
+    </script>
+  </header>
+  
+  {% block content %}
+
+  <div id="reference-summary" style="border:2px dotted black;">
+    <!-- not showing link to sources for now. -->
+    <h2>Reference <!-- (<a href="/view_sources/{{uid}}" target=”_blank”>view sources</a>) --></h2> 
+ 
+    <h3><i>{{ review_title }}</i></h3>
+    {{ reference }}
+
+    <br/><br/>
+  </div>
+
+
+<br/><br/>
+<hr>
+<div class="wrap">
+ 
+  <form action="/save_direction_annotation/{{uuids}}" method="post">
+    <input type="hidden" name="review_title" value="{{review_title}}">
+    <input type = "hidden" name = "reference" value = "{{reference}}">
+    <input type = "hidden" name = "predictions" value = "{{predictions}}">
+    <input type = "hidden" name = "systems" value = "{{systems}}">
+
+
+
+    <div id="direction">
+        <label class="statement">In the reference summary, characterize the authors' conclusion regarding the comparative effect of the main intervention(s) of interest, with respect to the outcome(s) summarized here. The summary concludes that the main intervention(s) ...</label>
+        <div id="generated-summary1" style="border:2px dotted black;">
+            <h3> Summary 1 </h3>
+            {{ predictions[0] }}
+        </div>
+
+          <div>
+            <label class="statement">The SUMMARY 1 concludes that the main intervention(s) ...</label>
+            <ul class='likert'>
+          <!-- <li></li> -->
+      
+              <li>
+                <input type="radio" name="likert_direction1" value="-1">
+                  Was harmful.
+              </li>
+  
+              <li>
+                <input type="radio" name="likert_direction1" value="0">
+                Had no effect.
+              </li>
+              
+              <li>
+                <input type="radio" name="likert_direction1" value="1">
+              Was beneficial. 
+              </li>
+              
+              <li>
+                <input type="radio" name="likert_direction1" value="2">
+              Could not come to a conclusion due to a lack of relevant evidence.
+              </li>
+  
+            </ul>
+  
+          </div>
+
+
+          <div id="generated-summary2" style="border:2px dotted black;">
+            <h3> Summary 2 </h3>
+            {{ predictions[1] }}
+            </div>
+          <div>
+            <label class="statement"> The SUMMARY 2 concludes that the main intervention(s) ...</label>
+            <ul class='likert'>
+            <!-- <li></li> -->
+            
+                <li>
+                  <input type="radio" name="likert_direction2" value="-1">
+                    Was harmful.
+                </li>
+        
+                <li>
+                  <input type="radio" name="likert_direction2" value="0">
+                  Had no effect.
+                </li>
+                
+                <li>
+                  <input type="radio" name="likert_direction2" value="1">
+                Was beneficial. 
+                </li>
+                
+                <li>
+                  <input type="radio" name="likert_direction2" value="2">
+                Could not come to a conclusion due to a lack of relevant evidence.
+                </li>
+    
+              </ul>
+          </div>
+
+          <div id="generated-summary3" style="border:2px dotted black;">
+            <h3> Summary 3 </h3>
+            {{ predictions[2] }}
+            </div>
+          <div>
+            <label class="statement"> The SUMMARY 3 concludes that the main intervention(s) ...</label>
+            <ul class='likert'>
+            <!-- <li></li> -->
+            
+                <li>
+                  <input type="radio" name="likert_direction3" value="-1">
+                    Was harmful.
+                </li>
+        
+                <li>
+                  <input type="radio" name="likert_direction3" value="0">
+                  Had no effect.
+                </li>
+                
+                <li>
+                  <input type="radio" name="likert_direction3" value="1">
+                Was beneficial. 
+                </li>
+                
+                <li>
+                  <input type="radio" name="likert_direction3" value="2">
+                Could not come to a conclusion due to a lack of relevant evidence.
+                </li>
+    
+              </ul>
+          </div>
+
+          <div id="generated-summary4" style="border:2px dotted black;">
+            <h3> Summary 4 </h3>
+            {{ predictions[3] }}
+            </div>
+          <div>
+            <label class="statement"> The SUMMARY 4 concludes that the main intervention(s) ...</label>
+            <ul class='likert'>
+            <!-- <li></li> -->
+            
+                <li>
+                  <input type="radio" name="likert_direction4" value="-1">
+                    Was harmful.
+                </li>
+        
+                <li>
+                  <input type="radio" name="likert_direction4" value="0">
+                  Had no effect.
+                </li>
+                
+                <li>
+                  <input type="radio" name="likert_direction4" value="1">
+                Was beneficial. 
+                </li>
+                
+                <li>
+                  <input type="radio" name="likert_direction4" value="2">
+                Could not come to a conclusion due to a lack of relevant evidence.
+                </li>
+    
+              </ul>
+          </div>
+
+          <div id = "buttons-div" class="buttons">
+            <button class="submit" name = "button" value = "clear">Clear</button>
+            <button class="submit" name = "button" value = "submit"> Submit</button>
+          </div> 
+
+          <div id = "buttons-back" class="buttons_back">
+            <button class="submit" name = "button" value = "back">Back</button>
+          </div>
+
+  </form>
+</div>
+    
+  <p>You've provided {{ already_done }} labels!</p>
+  <p><!-- <b>System</b>: {{ system }} <--> <b>Identifier</b>: {{ uuids }}</p>
+
+
+
+  {% endblock %}
+</section>

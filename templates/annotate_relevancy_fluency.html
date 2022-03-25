@@ -1,0 +1,147 @@
+<!doctype html>
+<title>Annotate</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<section class="content">
+  <header>
+    {% block header %}
+    
+    {% endblock %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $( document ).ready(function() {
+            $("#generated-summary1").show();
+            $("#relevance").show();
+            $("#semantic-plausibility").show;
+            
+            $("#buttons-div").show();
+            var url = $("#idx").val();
+            if(url == 0){
+              $("#buttons-back").hide();
+            }
+
+        });
+      
+    </script>
+  </header>
+  
+  {% block content %}
+
+  <h2>System Summary</h2>
+
+  <div id="generated-summary" style="border:2px dotted black;">
+    <h3> Summary {{idx}} </h3>
+    {{ predictions[idx] }}
+    </div>
+
+  <br/><br/>
+    <br/><br/>
+  </div>
+
+
+<br/><br/>
+<hr>
+<div class="wrap">
+ 
+  <form action="/save_annotation/{{uuids}}" method="post">
+    <input type = 'hidden' id = "idx" name = 'idx' value = "{{idx}}">
+    <input type="hidden" name="review_title" value="{{review_title}}">
+    <input type = "hidden" name = "reference" value = "{{reference}}">
+    <input type = "hidden" name = "predictions" value = "{{predictions}}">
+    <input type = "hidden" name = "systems" value = "{{systems}}">
+
+
+
+    <div id="relevance">
+      <label class="statement">Is the System Summary relevant to the topic <i>{{ review_title }}</i>?</label>
+        <ul class='likert'>
+        <li></li>
+        <li>
+          <input type="radio" name="likert_relevance" value="1">
+           Mostly off topic (does not seem to address the key question).
+        </li>
+        <li>
+          <input type="radio" name="likert_relevance" value="2">
+          Moderately on topic, but contains seemingly irrelevant information as well.
+        </li>
+        <li>
+          <input type="radio" name="likert_relevance" value="3">
+          Strongly focusses on this topic.
+        </li>
+        <li></li>
+        </ul>
+    </div>
+
+    <div id = "semantic-plausibility">
+        <label class="statement">Now we would now like you to assess the "semantic plausibility" of the text (without regard for the reference review or source abstracts). This text is ...</label>
+        <ul class='likert'>
+          <li>
+            <input type="radio" name="likert_fluency" value="1">
+            Very difficult to understand; clearly not written by a human.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency" value="2">
+            Mostly understandable but not very plausible: It contradicts itself and/or contains blatently untrue or incoherent statements.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency" value="3">
+            Understandable, but contains some major language errors and/or semantic oddities.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency" value="4">
+            Easy to understand, and seems mostly plausible and internally consistent. Contains some minor errors, but no major oddities or obviously incorrect text.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency" value="5">
+            I cannot readily distinguish this from a summary that might have been written by an expert reviewer.
+          </li>
+        </ul> 
+      </div>
+
+      <div id = "buttons-div" class="buttons">
+        <button class="submit" name = "button" value = "clear">Clear</button>
+        <button class="submit" name = "button" value = "submit"> Submit</button>
+      </div>
+
+      <div id = "buttons-back" class="buttons_back">
+        <button class="submit" name = "button" value = "back">Back</button>
+      </div>
+
+ 
+
+   
+   <!--
+    <label class="statement">Next we would now like you to assess the fluency of the text. For this assessment, you should ignore whether or not the scientific message is correct, and rate only the quality of the language. This text is ...</label>
+    <ul class='likert'>
+      <li>
+        <input type="radio" name="likert_fluency" value="1">
+        <label>Impossible to understand</label>
+      </li>
+      <li>
+        <input type="radio" name="likert_fluency" value="2">
+        <label>Difficult to understand with major language errors</label>
+      </li>
+      <li>
+        <input type="radio" name="likert_fluency" value="3">
+        <label>Understandable, but with major language errors</label>
+      </li>
+      <li>
+        <input type="radio" name="likert_fluency" value="4">
+        <label>Easy to understand with minor language errors only</label>
+      </li>
+      <li>
+        <input type="radio" name="likert_fluency" value="5">
+        <label>Easy to understand with no language errors</label>
+      </li>
+    </ul> 
+    -->
+
+  </form>
+</div>
+    
+  <p>You've provided {{ already_done }} labels!</p>
+  <p><!-- <b>System</b>: {{ system }} <--> <b>Identifier</b>: {{ uuids }}</p>
+
+
+
+  {% endblock %}
+</section>

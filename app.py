@@ -6,12 +6,14 @@ import sqlite3
 
 app = Flask(__name__)
 
-db_path = "data/summaries_pilot.db"  
+db_path = "data/summaries.db"  
 
 
 @app.route('/')
 def hello():
     return next()
+
+
 
 def get_summaries_for_uid(uid) -> Tuple[str]:
     # return (target, title, predicted) summary for this *prediction* uid.

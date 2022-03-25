@@ -29,17 +29,19 @@ def connect_to_db():
     c = conn.cursor()
     return conn, c 
 
+
+
 def add_references(reference_summary_path="../data/output_abs_title.csv"):   
     conn, c = connect_to_db()
 
     # NOTE that in fact any system output file will do here, since all
     # contain the targets -- here we ignore system specific output
-    references_df = pd.read_csv(reference_summary_path)
+    references_df = pd.read_csv(reference_summary_path)[:2]
 
     for i, reference_summary in references_df.iterrows():
 
-        target = reference_summary["Clean_Summary"]
-        c_id = reference_summary['Cochrane ID']
+        target = reference_summary["SummaryConclusions"]
+        c_id = reference_summary['ReviewID']
         try:
             title = cochrane_ids_to_titles[cochrane_ids_to_titles["ReviewID"] == c_id]['Cochrane_Title'].values[0]
         except:
@@ -53,11 +55,12 @@ def add_references(reference_summary_path="../data/output_abs_title.csv"):
             title = "(no title available)"
 
     
-        target = expand_abbrevs(target, c_id)
+        #target = expand_abbrevs(target, c_id)
         
         c.execute("""INSERT INTO target_summaries (uuid, cochrane_id, title, summary) VALUES (?, ?, ?, ?)""",
                                                         (i, c_id, 
                                                         title, target))
+    print('Added %d reference summaries'%(i))
 
     conn.commit()
     conn.close()
@@ -84,10 +87,10 @@ def expand_abbrevs(abstract, cdno):
     return expanded
 
 
-def add_sources(sources_path="../data/sources.json"):
+def add_sources(sources_path="../data/sources.jso#n"):
     conn, c = connect_to_db()
 
-    sources_df = pd.read_json(sources_path)
+    sources_df = pd.read_csv(sources_path)
     
     for cochrane_id, review_sources in sources_df.iterrows():
 
@@ -99,6 +102,7 @@ def add_sources(sources_path="../data/sources.json"):
             c.execute("""INSERT INTO source_abstract (cochrane_id, title, abstract) VALUES (?, ?, ?)""",
                                                             (cochrane_id, title, abstract)) 
  
+    print('Added %d sources '%(cochrane_id))
     conn.commit()
     conn.close()                                              
 
@@ -106,36 +110,37 @@ def add_sources(sources_path="../data/sources.json"):
 def add_system_outputs(sys_id, data_path):
     conn, c = connect_to_db()
 
-    system_df = pd.read_csv(data_path)
+    system_df = pd.read_csv(data_path)[:2]
     for i, generated_summary in system_df.iterrows():
-        generated = generated_summary['Prediction_Summary']
+        generated = generated_summary['Generated Summary']
         c.execute("""INSERT INTO generated_summaries (cochrane_id, system_id, summary) VALUES (?, ?, ?)""",
-                                                        (generated_summary['Cochrane ID'], 
+                                                        (generated_summary['ReviewID'], 
                                                         sys_id, generated))
 
+    print('Added %d generated summaries'%(i))
     conn.commit()
     conn.close()
 
 
-models = ["XSUM-None-abs_title", # just XSUM
-          "XSUM-FT_abs-abs_title", # XSUM + PMC pre-training 
-          "XSUM-FT_abs-decorated_input_plPICO", # XSUM + PMC pre-training + decorated inputs
-          "XSUM-FT_abs-robXss_sorted_input", # XSUM + PMC pre-training + sort by N * RoB
-          "XSUM-FT_abs-robXss_sorted_input_dec_plPICO" # XSUM + PMC pre-training + decorated inputs + sort by N * RoB
-]
 
 import os 
-base_dir = "/Users/byronwallace/code/PubMed_Summary/Evaluation/minimum_length_65/"
 
-# first add references; note that it doesn't really matter what output file you point
-# to here; any will do since the targets (references) are the same anyway.
-reference_path = os.path.join(base_dir, "output_"+models[0]+".csv")
+data_dir = "../../structured_summarization/data/"
+reference_path = os.path.join(data_dir, 'dev_rr_data_tagged.csv')
 add_references(reference_path)
 
-for m in models: 
-    add_system_outputs(m, os.path.join(base_dir, "output_"+m+".csv"))
 
-add_sources()
+evaluation_data_dir = "../../structured_summarization/evaluation/data/"
 
+models =[
+    'led_multilm_unsupervised_st',
+    'led_multilm_softsupervised',
+    'led_multilm_unsupervised_ghost',
+    'led_multilm_supervised_ghost'
+]
 
+for m in models:
+    m_path = os.path.join(evaluation_data_dir, "%s/%s_inference.csv"%(m,m))
+    add_system_outputs(m, m_path)
 
+add_sources(reference_path)
