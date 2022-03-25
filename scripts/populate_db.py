@@ -29,14 +29,21 @@ def connect_to_db():
     c = conn.cursor()
     return conn, c 
 
-
+def preprocess_df(df):
+    keys = ['Abstract', 'population', 'interventions', 'outcomes', 'SummaryConclusions','punchline_text', 'punchline_effect' , 'SummaryConclusion_labels', 'ReviewID']
+    for key in keys:
+        df = df[df[key] != "['']"]
+    return df
 
 def add_references(reference_summary_path="../data/output_abs_title.csv"):   
     conn, c = connect_to_db()
 
     # NOTE that in fact any system output file will do here, since all
     # contain the targets -- here we ignore system specific output
-    references_df = pd.read_csv(reference_summary_path)[:5]
+    references_df = pd.read_csv(reference_summary_path)
+    
+    references_df = preprocess_df(references_df)[:5]
+    print(references_df)
 
     for i, reference_summary in references_df.iterrows():
 
