@@ -169,6 +169,37 @@
               </li>
           </ul>
         </div>
+
+        <div id="generated-summary5" style="border:2px dotted black;">
+            <h3> Summary 5 </h3>
+            {{ predictions[4] }}
+        </div>
+        <div>
+          <label class = 'statement'> The system SUMMARY 4 ... </label>
+        
+          <ul class='likert'>
+              <li>
+                <input type="radio" id="test_likert" name="likert_facts5" value="1">
+                Strongly disagrees with or contradicts the reference summary.
+              </li>
+              <li>
+                <input type="radio" name="likert_facts5" value="2">
+                Moderately disagrees with the reference summary.
+              </li>
+              <li>
+                <input type="radio" name="likert_facts5" value="3">
+                Partially agrees and partially disagrees with the reference summary.
+              </li>
+              <li>
+                <input type="radio" name="likert_facts5" value="4">
+                Moderately agrees with the reference summary.
+              </li>
+              <li>
+                <input type="radio" name="likert_facts5" value="5">
+                Strongly agrees with reference summary.
+              </li>
+          </ul>
+        </div>
   
       </div>
 
@@ -187,7 +218,7 @@
   </form>
 </div>
     
-  <p>You've provided {{ already_done }} labels!</p>
+  <p>You've provided {{ already_done }} set of labels!</p>
   <p><!-- <b>System</b>: {{ system }} <--> <b>Identifier</b>: {{ uid }}</p>
 
 

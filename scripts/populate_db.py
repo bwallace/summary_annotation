@@ -36,7 +36,7 @@ def add_references(reference_summary_path="../data/output_abs_title.csv"):
 
     # NOTE that in fact any system output file will do here, since all
     # contain the targets -- here we ignore system specific output
-    references_df = pd.read_csv(reference_summary_path)[:2]
+    references_df = pd.read_csv(reference_summary_path)[:5]
 
     for i, reference_summary in references_df.iterrows():
 
@@ -110,7 +110,7 @@ def add_sources(sources_path="../data/sources.jso#n"):
 def add_system_outputs(sys_id, data_path):
     conn, c = connect_to_db()
 
-    system_df = pd.read_csv(data_path)[:2]
+    system_df = pd.read_csv(data_path)[:5]
     for i, generated_summary in system_df.iterrows():
         generated = generated_summary['Generated Summary']
         c.execute("""INSERT INTO generated_summaries (cochrane_id, system_id, summary) VALUES (?, ?, ?)""",
@@ -133,8 +133,9 @@ add_references(reference_path)
 evaluation_data_dir = "../../structured_summarization/evaluation/data/"
 
 models =[
-    'led_multilm_unsupervised_st',
-    'led_multilm_softsupervised',
+    'led_vanilla_input_abstract',
+    'led_vanilla_input_special_tokens',
+    'led_vanilla_input_special_tokens_target_special_tokens',
     'led_multilm_unsupervised_ghost',
     'led_multilm_supervised_ghost'
 ]

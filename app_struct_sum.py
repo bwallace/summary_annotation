@@ -5,7 +5,7 @@ import json
 import sqlite3
 from random import shuffle
 app = Flask(__name__)
-
+import math
 db_path = "data/summaries.db"  
 
 
@@ -14,10 +14,11 @@ def hello():
     return next()
 
 
-n_labels_per_doc = 16
+n_labels_per_doc = 4
+n_docs = 5
 def get_n_labels():
     with sqlite3.connect(db_path) as con:
-        q_str = """SELECT count(*) FROM label WHERE 1"""
+        q_str = """SELECT count(*) FROM label """
         return con.execute(q_str).fetchone()[0]
 
 def get_summaries_for_uid(cochrane_id) -> Tuple[str]:
@@ -52,8 +53,8 @@ def annotate(uid):
     reference, review_title, systems, predictions, uuids = get_summaries_for_uid(uid)
 
     # this is terrible but right now we collect 3 annotations per doc, so... yeah
-    
-    n_done = str(int(get_n_labels()/n_labels_per_doc))
+    print(get_n_labels())
+    n_done = str(math.floor(int(get_n_labels()/(n_labels_per_doc * n_docs))))
 
     return render_template('annotate_relevancy_fluency.html', idx = 0, uuids=uuids, review_title=review_title, 
                             reference=reference, predictions=predictions, systems=systems,
@@ -65,7 +66,7 @@ def next():
     with sqlite3.connect(db_path) as con:
         
 
-        q_str = """SELECT uuid FROM generated_summaries WHERE NOT 4 = (
+        q_str = """SELECT uuid FROM generated_summaries WHERE NOT {} = (
                     SELECT COUNT(*) FROM label WHERE generated_summaries.uuid = label.generated_summary_id) 
                     ORDER BY COCHRANE_ID, RANDOM() LIMIT 1;""".format(4)
 
@@ -114,8 +115,8 @@ def save_factuality_annotation(uuids):
                 factuality_score    = int(request.form[request_key])
                 insert_label(con, uid, "%s-factuality"%(system), factuality_score)
 
-    n_labels_per_doc = 16
-    n_done = str(int(get_n_labels()/n_labels_per_doc))
+    
+    n_done = str(math.floor(int(get_n_labels()/(n_labels_per_doc * n_docs))))
 
     if button_val == 'back':
         return render_template('annotate_direction.html', uuids=uuids, review_title=review_title, 
@@ -154,8 +155,7 @@ def save_direction_annotation(uuids):
                 direction_score    = int(request.form[request_key])
                 insert_label(con, uid, "%s-direction"%(system), direction_score)
 
-    
-    n_done = str(int(get_n_labels()/n_labels_per_doc))
+    n_done = str(math.floor(int(get_n_labels()/(n_labels_per_doc * n_docs))))
 
     if button_val == 'back':
         
@@ -205,8 +205,8 @@ def save_annotation(uuids):
             insert_label(con, uid, "%s-fluency"%(system), fluency_score)
             
     
-    n_labels_per_doc = 16
-    n_done = str(int(get_n_labels()/n_labels_per_doc))
+    
+    n_done = str(math.floor(int(get_n_labels()/(n_labels_per_doc * n_docs))))
 
     if button_val == 'submit' and next_idx < len(uuids):
 

@@ -179,6 +179,38 @@
               </ul>
           </div>
 
+          <div id="generated-summary5" style="border:2px dotted black;">
+            <h3> Summary 5 </h3>
+            {{ predictions[4] }}
+            </div>
+          <div>
+            <label class="statement"> The SUMMARY 5 concludes that the main intervention(s) ...</label>
+            <ul class='likert'>
+            <!-- <li></li> -->
+            
+                <li>
+                  <input type="radio" name="likert_direction5" value="-1">
+                    Was harmful.
+                </li>
+        
+                <li>
+                  <input type="radio" name="likert_direction5" value="0">
+                  Had no effect.
+                </li>
+                
+                <li>
+                  <input type="radio" name="likert_direction5" value="1">
+                Was beneficial. 
+                </li>
+                
+                <li>
+                  <input type="radio" name="likert_direction5" value="2">
+                Could not come to a conclusion due to a lack of relevant evidence.
+                </li>
+    
+              </ul>
+          </div>
+
           <div id = "buttons-div" class="buttons">
             <button class="submit" name = "button" value = "clear">Clear</button>
             <button class="submit" name = "button" value = "submit"> Submit</button>
@@ -191,7 +223,7 @@
   </form>
 </div>
     
-  <p>You've provided {{ already_done }} labels!</p>
+  <p>You've provided {{ already_done }} set of labels!</p>
   <p><!-- <b>System</b>: {{ system }} <--> <b>Identifier</b>: {{ uuids }}</p>
 
 

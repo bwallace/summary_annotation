@@ -29,7 +29,7 @@
   <h2>System Summary</h2>
 
   <div id="generated-summary" style="border:2px dotted black;">
-    <h3> Summary {{idx}} </h3>
+    <h3> Summary {{idx + 1}} </h3>
     {{ predictions[idx] }}
     </div>
 
@@ -138,7 +138,7 @@
   </form>
 </div>
     
-  <p>You've provided {{ already_done }} labels!</p>
+  <p>You've provided {{ already_done }} set of labels!</p>
   <p><!-- <b>System</b>: {{ system }} <--> <b>Identifier</b>: {{ uuids }}</p>
 
 
