@@ -28,7 +28,7 @@
 
   <h2>System Summary</h2>
 
-  <div id="generated-summary" style="border:2px dotted black;">
+  <div id="generated-summary" style="border:2px dotted black; font-size: 16px; color:rgb(13, 4, 133)">
     <h3> Summary {{idx + 1}} </h3>
     {{ predictions[idx] }}
     </div>
@@ -52,6 +52,7 @@
 
 
     <div id="relevance">
+      <label class="statement_type">RELEVANCE </label>
       <label class="statement">Is the System Summary relevant to the topic <i>{{ review_title }}</i>?</label>
         <ul class='likert'>
         <li></li>
@@ -72,7 +73,8 @@
     </div>
 
     <div id = "semantic-plausibility">
-        <label class="statement">Now we would now like you to assess the "semantic plausibility" of the text (without regard for the reference review or source abstracts). This text is ...</label>
+        <label class="statement_type">SEMANTIC-PLAUSABILITY </label>
+        <label class="statement">Independent of its <i> content </i>, how readable and coherent is this text?</label>
         <ul class='likert'>
           <li>
             <input type="radio" name="likert_fluency" value="1">

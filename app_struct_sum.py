@@ -6,7 +6,7 @@ import sqlite3
 from random import shuffle
 app = Flask(__name__)
 import math
-db_path = "data/summaries.db"  
+db_path = "data/summaries_test.db"  
 
 
 @app.route('/')
@@ -66,9 +66,9 @@ def next():
     with sqlite3.connect(db_path) as con:
         
 
-        q_str = """SELECT uuid FROM generated_summaries WHERE NOT {} = (
+        q_str = """SELECT uuid FROM generated_summaries WHERE {} > (
                     SELECT COUNT(*) FROM label WHERE generated_summaries.uuid = label.generated_summary_id) 
-                    ORDER BY COCHRANE_ID, RANDOM() LIMIT 1;""".format(4)
+                    ORDER BY COCHRANE_ID, RANDOM() LIMIT 1;""".format(6)
 
 
         next_uuid = con.execute(q_str).fetchone()
@@ -119,7 +119,7 @@ def save_factuality_annotation(uuids):
     n_done = str(math.floor(int(get_n_labels()/(n_labels_per_doc * n_docs))))
 
     if button_val == 'back':
-        return render_template('annotate_direction.html', uuids=uuids, review_title=review_title, 
+        return render_template('annotate_direction.html', idx = len(uuids), uuids=uuids, review_title=review_title, 
                                 reference=reference, predictions=predictions, systems=systems,
                                 already_done=n_done)
 
@@ -137,34 +137,57 @@ def save_direction_annotation(uuids):
     uuids = eval(uuids)
     button_val = str(request.form['button'])
 
-    
+    idx = int(request.form['idx'])
     review_title = str(request.form['review_title'])
     reference = str(request.form['reference'])
     predictions = eval(request.form['predictions'])
     systems = eval(request.form['systems'])
 
     print(predictions)
+    prev_idx = idx - 1
+    next_idx = idx + 1
 
     if button_val == 'submit':
         with sqlite3.connect(db_path) as con:
-
-            for idx, uid in enumerate(uuids):
-            
-                system = systems[idx]
-                request_key = 'likert_direction%s'%(str(idx + 1))
+            '''coch_id = con.execute("""SELECT cochrane_id FROM generated_summaries where uuid='{}';""".format(uuids[0])).fetchone()
+            coch_id = int(coch_id[0].split('CD')[-1])'''
+            if idx == 0 :
+                request_key = 'likert_direction-ref'
+                direction_score    = int(request.form[request_key])
+                insert_label(con, uuids[0], "%s-direction"%('reference'), direction_score)
+            else:
+                system = systems[idx - 1]
+                uid = uuids[idx - 1]
+                request_key = 'likert_direction'
                 direction_score    = int(request.form[request_key])
                 insert_label(con, uid, "%s-direction"%(system), direction_score)
 
+                request_key = 'likert_int_faithful'
+                int_faithful_score    = int(request.form[request_key])
+                insert_label(con, uid, "%s-int_faithful"%(system), int_faithful_score)
+
+                request_key = 'likert_out_faithful'
+                out_faithful_score    = int(request.form[request_key])
+                insert_label(con, uid, "%s-out_faithful"%(system), out_faithful_score)
+
+
+
     n_done = str(math.floor(int(get_n_labels()/(n_labels_per_doc * n_docs))))
 
-    if button_val == 'back':
+    if button_val == 'submit' and next_idx <= len(uuids):
+
+            return render_template('annotate_direction.html', idx = next_idx, uuids=uuids, review_title=review_title, 
+                                reference=reference, predictions=predictions, systems=systems,
+                                already_done=n_done)
+
+    elif button_val == 'back':
         
-        return render_template('annotate_relevancy_fluency.html', idx = len(uuids) -1, uuids=uuids, review_title=review_title, 
-                            reference=reference, predictions=predictions, systems=systems,
-                            already_done=n_done)
+        return render_template('annotate_direction.html', idx = prev_idx, uuids=uuids, review_title=review_title, 
+                                reference=reference, predictions=predictions, systems=systems,
+                                already_done=n_done)
 
     elif button_val == 'clear':
-        return render_template('annotate_direction.html', uuids=uuids, review_title=review_title, 
+        return render_template('annotate_direction.html', idx = idx, uuids=uuids, review_title=review_title, 
                                 reference=reference, predictions=predictions, systems=systems,
                                 already_done=n_done)
 
@@ -227,6 +250,6 @@ def save_annotation(uuids):
 
     
 
-    return render_template('annotate_direction.html', uuids=uuids, review_title=review_title, 
+    return render_template('annotate_direction.html', idx = 0, uuids=uuids, review_title=review_title, 
                                 reference=reference, predictions=predictions, systems=systems,
                                 already_done=n_done)

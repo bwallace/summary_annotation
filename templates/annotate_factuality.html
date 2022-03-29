@@ -23,7 +23,7 @@
   
   {% block content %}
 
-  <div id="reference-summary" style="border:2px dotted black;">
+  <div id="reference-summary" style="border:2px dotted black; color:darkred">
     <!-- not showing link to sources for now. -->
     <h2>Reference <!-- (<a href="/view_sources/{{uid}}" target=”_blank”>view sources</a>) --></h2> 
  
@@ -46,11 +46,13 @@
     <div id="facts">
         <label class="statement">Now we ask that you assess the factuality of the system summary text, with reference to the assessment you made above regarding the key findings reported in the manually written summary.  </label>
         
-        <div id="generated-summary1" style="border:2px dotted black;">
+        <div id="generated-summary1" style="border:2px dotted black; font-size: 14px; color:rgb(13, 4, 133)">
             <h3> Summary 1 </h3>
             {{ predictions[0] }}
         </div>
+        
         <div>
+          <label class="statement_type">FACTUALITY </label>
           <label class = 'statement'> The system SUMMARY 1 ... </label>
         
           <ul class='likert'>
@@ -77,11 +79,12 @@
           </ul>
         </div>
   
-        <div id="generated-summary2" style="border:2px dotted black;">
+        <div id="generated-summary2" style="border:2px dotted black; font-size: 14px; color:rgb(13, 4, 133)">
             <h3> Summary 2 </h3>
             {{ predictions[1] }}
         </div>
         <div>
+          <label class="statement_type">FACTUALITY </label>
           <label class = 'statement'> The system SUMMARY 2 ... </label>
         
           <ul class='likert'>
@@ -108,11 +111,12 @@
           </ul>
         </div>
   
-        <div id="generated-summary3" style="border:2px dotted black;">
+        <div id="generated-summary3" style="border:2px dotted black; font-size: 14px; color:rgb(13, 4, 133)">
             <h3> Summary 3 </h3>
             {{ predictions[2] }}
         </div>
         <div>
+          <label class="statement_type">FACTUALITY </label>
           <label class = 'statement'> The system SUMMARY 3 ... </label>
         
           <ul class='likert'>
@@ -139,11 +143,12 @@
           </ul>
         </div>
   
-        <div id="generated-summary4" style="border:2px dotted black;">
+        <div id="generated-summary4" style="border:2px dotted black; font-size: 14px; color:rgb(13, 4, 133)">
             <h3> Summary 4 </h3>
             {{ predictions[3] }}
         </div>
         <div>
+          <label class="statement_type">FACTUALITY </label>
           <label class = 'statement'> The system SUMMARY 4 ... </label>
         
           <ul class='likert'>
@@ -170,12 +175,13 @@
           </ul>
         </div>
 
-        <div id="generated-summary5" style="border:2px dotted black;">
+        <div id="generated-summary5" style="border:2px dotted black; font-size: 14px; color:rgb(13, 4, 133)">
             <h3> Summary 5 </h3>
             {{ predictions[4] }}
         </div>
         <div>
-          <label class = 'statement'> The system SUMMARY 4 ... </label>
+          <label class="statement_type">FACTUALITY </label>
+          <label class = 'statement'> The system SUMMARY 5 ... </label>
         
           <ul class='likert'>
               <li>

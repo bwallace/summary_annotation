@@ -10,11 +10,23 @@
     <script>
         $( document ).ready(function() {
             $("#reference-summary").show();
-            $("#direction").show();
             
-            $("#buttons-div").show();
-            $("#buttons-back").show();
-          
+
+            var idx = $("#idx").val();
+            
+            if(idx == 0){
+              $("#reference-summary-box").show();
+              $("#reference-summary-annotation").show();
+              $("#summary-direction-faithfulness").hide();
+              $("#buttons-back").hide();
+            }
+
+            else{
+              $("#reference-summary-box").hide();
+              $("#reference-summary-annotation").hide();
+            }
+            
+            
 
         });
       
@@ -23,7 +35,7 @@
   
   {% block content %}
 
-  <div id="reference-summary" style="border:2px dotted black;">
+  <div id="reference-summary" style="border:2px dotted black; color:darkred">
     <!-- not showing link to sources for now. -->
     <h2>Reference <!-- (<a href="/view_sources/{{uid}}" target=”_blank”>view sources</a>) --></h2> 
  
@@ -39,42 +51,120 @@
 <div class="wrap">
  
   <form action="/save_direction_annotation/{{uuids}}" method="post">
+    <input type = 'hidden' id = "idx" name = 'idx' value = "{{idx}}">
     <input type="hidden" name="review_title" value="{{review_title}}">
     <input type = "hidden" name = "reference" value = "{{reference}}">
     <input type = "hidden" name = "predictions" value = "{{predictions}}">
     <input type = "hidden" name = "systems" value = "{{systems}}">
 
+    <label class="statement", style = "font-size: 16px;">In the reference summary, characterize the authors' conclusion regarding the comparative effect and faithfulness of the main intervention(s) of interest, with respect to the outcome(s) summarized here. </label>
 
+    <div id = 'reference-summary-box' style="border:2px dotted black; font-size: 14px; color:rgb(13, 4, 133)"> 
+      <h3 > Reference Summary  </h3>
+      See above
+    </div>
 
-    <div id="direction">
-        <label class="statement">In the reference summary, characterize the authors' conclusion regarding the comparative effect of the main intervention(s) of interest, with respect to the outcome(s) summarized here. The summary concludes that the main intervention(s) ...</label>
-        <div id="generated-summary1" style="border:2px dotted black;">
-            <h3> Summary 1 </h3>
-            {{ predictions[0] }}
+    <div id = 'reference-summary-annotation'>
+      <label class="statement_type">Directionality </label>
+      <label class="statement"> The REFERENCE SUMMARY concludes that the main intervention(s) ...</label>
+      <ul class='likert'>
+    <!-- <li></li> -->
+
+        <li>
+          <input type="radio" name="likert_direction-ref" value="-1">
+            Was harmful.
+        </li>
+
+        <li>
+          <input type="radio" name="likert_direction-ref" value="0">
+          Had no effect.
+        </li>
+        
+        <li>
+          <input type="radio" name="likert_direction-ref" value="1">
+        Was beneficial. 
+        </li>
+        
+        <li>
+          <input type="radio" name="likert_direction-ref" value="2">
+        Could not come to a conclusion due to a lack of relevant evidence.
+        </li>
+
+      </ul>
+
+    </div>
+
+    <div id="summary-direction-faithfulness">
+        <div id="generated-summary" style="border:2px dotted black; font-size: 14px; color:rgb(13, 4, 133)">
+            <h3> Summary {{idx}} </h3>
+             {{ predictions[idx - 1] }}
         </div>
 
           <div>
-            <label class="statement">The SUMMARY 1 concludes that the main intervention(s) ...</label>
+            <label class="statement_type">Faithfulness </label>
+            <label class="statement">With respect to the reference summary, the INTERVENTIONS described in SUMMARY {{idx}} are </label>
             <ul class='likert'>
-          <!-- <li></li> -->
+            <!-- <li></li> -->
       
               <li>
-                <input type="radio" name="likert_direction1" value="-1">
+                <input type="radio" name="likert_int_faithful" value="0">
+                Same as interventions in the reference summary.
+              </li>
+              
+              <li>
+                <input type="radio" name="likert_int_faithful" value="1">
+                Different from interventions in the reference summary. 
+              </li>
+              
+              <li>
+                <input type="radio" name="likert_int_faithful" value="2">
+                Inconclusive.
+              </li>
+  
+            </ul>
+
+            <label class="statement">With respect to the reference summary, the OUTCOMES described in SUMMARY {{idx}} are </label>
+            <ul class='likert'>
+            <!-- <li></li> -->
+      
+              <li>
+                <input type="radio" name="likert_out_faithful" value="0">
+                Same as outcomes in the reference summary.
+              </li>
+              
+              <li>
+                <input type="radio" name="likert_out_faithful" value="1">
+                Different from outcomes in the reference summary. 
+              </li>
+              
+              <li>
+                <input type="radio" name="likert_out_faithful" value="2">
+                Inconclusive.
+              </li>
+  
+            </ul>
+            <label class="statement_type">Directionality </label>
+            <label class="statement"> The SUMMARY {{idx}} concludes that the main intervention(s) ... </label>
+            <ul class='likert'>
+          
+      
+              <li>
+                <input type="radio" name="likert_direction" value="-1">
                   Was harmful.
               </li>
   
               <li>
-                <input type="radio" name="likert_direction1" value="0">
+                <input type="radio" name="likert_direction" value="0">
                 Had no effect.
               </li>
               
               <li>
-                <input type="radio" name="likert_direction1" value="1">
+                <input type="radio" name="likert_direction" value="1">
               Was beneficial. 
               </li>
               
               <li>
-                <input type="radio" name="likert_direction1" value="2">
+                <input type="radio" name="likert_direction" value="2">
               Could not come to a conclusion due to a lack of relevant evidence.
               </li>
   
@@ -82,134 +172,7 @@
   
           </div>
 
-
-          <div id="generated-summary2" style="border:2px dotted black;">
-            <h3> Summary 2 </h3>
-            {{ predictions[1] }}
-            </div>
-          <div>
-            <label class="statement"> The SUMMARY 2 concludes that the main intervention(s) ...</label>
-            <ul class='likert'>
-            <!-- <li></li> -->
-            
-                <li>
-                  <input type="radio" name="likert_direction2" value="-1">
-                    Was harmful.
-                </li>
-        
-                <li>
-                  <input type="radio" name="likert_direction2" value="0">
-                  Had no effect.
-                </li>
-                
-                <li>
-                  <input type="radio" name="likert_direction2" value="1">
-                Was beneficial. 
-                </li>
-                
-                <li>
-                  <input type="radio" name="likert_direction2" value="2">
-                Could not come to a conclusion due to a lack of relevant evidence.
-                </li>
-    
-              </ul>
-          </div>
-
-          <div id="generated-summary3" style="border:2px dotted black;">
-            <h3> Summary 3 </h3>
-            {{ predictions[2] }}
-            </div>
-          <div>
-            <label class="statement"> The SUMMARY 3 concludes that the main intervention(s) ...</label>
-            <ul class='likert'>
-            <!-- <li></li> -->
-            
-                <li>
-                  <input type="radio" name="likert_direction3" value="-1">
-                    Was harmful.
-                </li>
-        
-                <li>
-                  <input type="radio" name="likert_direction3" value="0">
-                  Had no effect.
-                </li>
-                
-                <li>
-                  <input type="radio" name="likert_direction3" value="1">
-                Was beneficial. 
-                </li>
-                
-                <li>
-                  <input type="radio" name="likert_direction3" value="2">
-                Could not come to a conclusion due to a lack of relevant evidence.
-                </li>
-    
-              </ul>
-          </div>
-
-          <div id="generated-summary4" style="border:2px dotted black;">
-            <h3> Summary 4 </h3>
-            {{ predictions[3] }}
-            </div>
-          <div>
-            <label class="statement"> The SUMMARY 4 concludes that the main intervention(s) ...</label>
-            <ul class='likert'>
-            <!-- <li></li> -->
-            
-                <li>
-                  <input type="radio" name="likert_direction4" value="-1">
-                    Was harmful.
-                </li>
-        
-                <li>
-                  <input type="radio" name="likert_direction4" value="0">
-                  Had no effect.
-                </li>
-                
-                <li>
-                  <input type="radio" name="likert_direction4" value="1">
-                Was beneficial. 
-                </li>
-                
-                <li>
-                  <input type="radio" name="likert_direction4" value="2">
-                Could not come to a conclusion due to a lack of relevant evidence.
-                </li>
-    
-              </ul>
-          </div>
-
-          <div id="generated-summary5" style="border:2px dotted black;">
-            <h3> Summary 5 </h3>
-            {{ predictions[4] }}
-            </div>
-          <div>
-            <label class="statement"> The SUMMARY 5 concludes that the main intervention(s) ...</label>
-            <ul class='likert'>
-            <!-- <li></li> -->
-            
-                <li>
-                  <input type="radio" name="likert_direction5" value="-1">
-                    Was harmful.
-                </li>
-        
-                <li>
-                  <input type="radio" name="likert_direction5" value="0">
-                  Had no effect.
-                </li>
-                
-                <li>
-                  <input type="radio" name="likert_direction5" value="1">
-                Was beneficial. 
-                </li>
-                
-                <li>
-                  <input type="radio" name="likert_direction5" value="2">
-                Could not come to a conclusion due to a lack of relevant evidence.
-                </li>
-    
-              </ul>
-          </div>
+    </div>
 
           <div id = "buttons-div" class="buttons">
             <button class="submit" name = "button" value = "clear">Clear</button>

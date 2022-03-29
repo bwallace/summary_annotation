@@ -8,7 +8,7 @@ import json
 import pandas as pd 
 import sqlite3
 
-db_path = "../data/summaries.db"  
+db_path = "../data/summaries_test.db"  
 cochrane_ids_to_titles_d = json.load(open("../data/cdno_title.json")) #pd.read_json("../data/cdno_title.json") #pd.read_csv("../data/cdnos_to_titles.csv")#cochrane_ids_to_titles.csv")
 c_ids, titles = [], []
 for c_id, title in cochrane_ids_to_titles_d.items():
@@ -42,7 +42,7 @@ def add_references(reference_summary_path="../data/output_abs_title.csv"):
     # contain the targets -- here we ignore system specific output
     references_df = pd.read_csv(reference_summary_path)
     
-    references_df = preprocess_df(references_df)[:5]
+    references_df = preprocess_df(references_df)
     print(references_df)
 
     for i, reference_summary in references_df.iterrows():
@@ -116,10 +116,17 @@ def add_sources(sources_path="../data/sources.jso#n"):
 
 def add_system_outputs(sys_id, data_path):
     conn, c = connect_to_db()
-
-    system_df = pd.read_csv(data_path)[:5]
+    special_tokens = ['<population>', '</population>',
+                                            '<interventions>', '</interventions>',
+                                            '<outcomes>', '</outcomes>',
+                                            '<punchline_text>', '</punchline_text>',
+                                            '<study>', '</study>', "<sep>"]
+    system_df = pd.read_csv(data_path)
     for i, generated_summary in system_df.iterrows():
         generated = generated_summary['Generated Summary']
+        generated = [w for w in generated.split(' ') if w not in special_tokens]
+        generated = ' '.join(generated)
+        #print(generated)
         c.execute("""INSERT INTO generated_summaries (cochrane_id, system_id, summary) VALUES (?, ?, ?)""",
                                                         (generated_summary['ReviewID'], 
                                                         sys_id, generated))
@@ -133,7 +140,7 @@ def add_system_outputs(sys_id, data_path):
 import os 
 
 data_dir = "../../structured_summarization/data/"
-reference_path = os.path.join(data_dir, 'dev_rr_data_tagged.csv')
+reference_path = os.path.join(data_dir, 'test_rr_data_tagged.csv')
 add_references(reference_path)
 
 
@@ -148,7 +155,7 @@ models =[
 ]
 
 for m in models:
-    m_path = os.path.join(evaluation_data_dir, "%s/%s_inference.csv"%(m,m))
+    m_path = os.path.join(evaluation_data_dir, "%s/%s_inference_test.csv"%(m,m))
     add_system_outputs(m, m_path)
 
 add_sources(reference_path)

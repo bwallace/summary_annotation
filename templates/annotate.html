@@ -10,25 +10,151 @@
     <script>
         $( document ).ready(function() {
           //$("#semantic-plausibility").hide();
+
+          //gensum1, rel1, sem1 
           $("#reference-summary").hide();
-          $("#facts").hide();
-          $("#buttons-div").hide();
+
+          $("#generated-summary1").show();
+          $("#generated-summary2").hide();
+          $("#generated-summary3").hide();
+          $("#generated-summary4").hide();
+
+          $("#relevance1").show();
+          $("#relevance2").hide();
+          $("#relevance3").hide();
+          $("#relevance4").hide();
+
+          $("#semantic-plausibility1").show();
+          $("#semantic-plausibility2").hide();
+          $("#semantic-plausibility3").hide();
+          $("#semantic-plausibility4").hide();
 
           $("#direction").hide();
           $("#facts").hide();
           $("#buttons-div").hide();
 
-          //$("input:radio[name='likert_facts']").click(function() {
-          $("input:radio[name='likert_fluency']").click(function() {
-            $("#relevance").fadeOut();
-            $("#semantic-plausibility").fadeOut();
+          $("input:radio[name='likert_fluency1']").click(function() {
+            //gensum2, rel1, sem2
 
+            $("#reference-summary").hide();
 
+            $("#generated-summary1").hide();
+            $("#generated-summary2").show();
+            $("#generated-summary3").hide();
+            $("#generated-summary4").hide();
+
+            $("#relevance1").hide();
+            $("#relevance2").show();
+            $("#relevance3").hide();
+            $("#relevance4").hide();
+
+            $("#semantic-plausibility1").hide();
+            $("#semantic-plausibility2").show();
+            $("#semantic-plausibility3").hide();
+            $("#semantic-plausibility4").hide();
+
+            $("#direction").hide();
+            $("#facts").hide();
+            $("#buttons-div").hide();
+          });
+
+          $("input:radio[name='likert_fluency2']").click(function() {
+            //gensum3, rel3, sem3
+            $("#reference-summary").hide();
+
+            $("#generated-summary1").hide();
+            $("#generated-summary2").hide();
+            $("#generated-summary3").show();
+            $("#generated-summary4").hide();
+
+            $("#relevance1").hide();
+            $("#relevance2").hide();
+            $("#relevance3").show();
+            $("#relevance4").hide();
+
+            $("#semantic-plausibility1").hide();
+            $("#semantic-plausibility2").hide();
+            $("#semantic-plausibility3").show();
+            $("#semantic-plausibility4").hide();
+
+            $("#direction").hide();
+            $("#facts").hide();
+            $("#buttons-div").hide();
+          });
+
+          $("input:radio[name='likert_fluency3']").click(function() {
+            //gensum4, rel4, sem4
+            $("#reference-summary").hide();
+
+            $("#generated-summary1").hide();
+            $("#generated-summary2").hide();
+            $("#generated-summary3").hide();
+            $("#generated-summary4").show();
+
+            $("#relevance1").hide();
+            $("#relevance2").hide();
+            $("#relevance3").hide();
+            $("#relevance4").show();
+
+            $("#semantic-plausibility1").hide();
+            $("#semantic-plausibility2").hide();
+            $("#semantic-plausibility3").hide();
+            $("#semantic-plausibility4").show();
+
+            $("#direction").hide();
+            $("#facts").hide();
+            $("#buttons-div").hide();
+          });
+          //likert_direction4
+          $("input:radio[name='likert_fluency4']").click(function() {
             $("#reference-summary").fadeIn();
+
+            $("#generated-summary1").show();
+            $("#generated-summary2").show();
+            $("#generated-summary3").show();
+            $("#generated-summary4").show();
+
+            $("#relevance1").hide();
+            $("#relevance2").hide();
+            $("#relevance3").hide();
+            $("#relevance4").hide();
+
+            $("#semantic-plausibility1").hide();
+            $("#semantic-plausibility2").hide();
+            $("#semantic-plausibility3").hide();
+            $("#semantic-plausibility4").hide();
+
+
             $("#direction").show();
+            $("#facts").hide();
+            $("#buttons-div").hide();
+          });
+          $("input:radio[name='likert_direction4']").click(function() {
+            $("#reference-summary").show();
+
+            $("#generated-summary1").show();
+            $("#generated-summary2").show();
+            $("#generated-summary3").show();
+            $("#generated-summary4").show();
+
+            $("#relevance1").hide();
+            $("#relevance2").hide();
+            $("#relevance3").hide();
+            $("#relevance4").hide();
+
+            $("#semantic-plausibility1").hide();
+            $("#semantic-plausibility2").hide();
+            $("#semantic-plausibility3").hide();
+            $("#semantic-plausibility4").hide();
+
+
+            $("#direction").hide();
             $("#facts").show();
             $("#buttons-div").show();
           });
+
+          //$("input:radio[name='likert_facts']").click(function() {
+          
 
         });
       
@@ -36,12 +162,7 @@
   </header>
   
   {% block content %}
-
-  <h2>System Summary</h2>
-
-  {{ prediction }}
-
-  <br/><br/>
+  
   <div id="reference-summary" style="border:2px dotted black;">
     <!-- not showing link to sources for now. -->
     <h2>Reference <!-- (<a href="/view_sources/{{uid}}" target=”_blank”>view sources</a>) --></h2> 
@@ -52,27 +173,113 @@
     <br/><br/>
   </div>
 
+  <h2>System Summaries</h2>
+
+  <div id="generated-summary1" style="border:2px dotted black;">
+  <h3> Summary 1 </h3>
+  {{ prediction[0] }}
+  </div>
+
+  <div id="generated-summary2" style="border:2px dotted black;">
+  <h3> Summary 2 </h3>
+  {{ prediction[1] }}
+  </div>
+
+  <div id="generated-summary3" style="border:2px dotted black;">
+  <h3> Summary 3 </h3>
+  {{ prediction[2] }}
+  </div>
+
+  <div id="generated-summary4" style="border:2px dotted black;">
+  <h3> Summary 4 </h3>
+  {{ prediction[3] }}
+  </div>
+
+  <br/><br/>
+  
+
 
 <br/><br/>
 <hr>
 <div class="wrap">
  
   <form action="/save_annotation/{{uid}}" method="post">
+    <input type="hidden" name="review_title" value= "{{review_title}}">
 
-    <div id="relevance">
-      <label class="statement">Is the System Summary relevant to the topic <i>{{ review_title }}</i>?</label>
+    <div id="relevance1">
+      <label class="statement">Is the System Summary 1 relevant to the topic <i>{{ review_title }}</i>?</label>
         <ul class='likert'>
         <li></li>
         <li>
-          <input type="radio" name="likert_relevance" value="1">
+          <input type="radio" name="likert_relevance1" value="1">
            Mostly off topic (does not seem to address the key question).
         </li>
         <li>
-          <input type="radio" name="likert_relevance" value="2">
+          <input type="radio" name="likert_relevance1" value="2">
           Moderately on topic, but contains seemingly irrelevant information as well.
         </li>
         <li>
-          <input type="radio" name="likert_relevance" value="3">
+          <input type="radio" name="likert_relevance1" value="3">
+          Strongly focusses on this topic.
+        </li>
+        <li></li>
+        </ul>
+    </div>
+
+    <div id="relevance2">
+      <label class="statement">Is the System Summary 2 relevant to the topic <i>{{ review_title }}</i>?</label>
+        <ul class='likert'>
+        <li></li>
+        <li>
+          <input type="radio" name="likert_relevance2" value="1">
+           Mostly off topic (does not seem to address the key question).
+        </li>
+        <li>
+          <input type="radio" name="likert_relevance2" value="2">
+          Moderately on topic, but contains seemingly irrelevant information as well.
+        </li>
+        <li>
+          <input type="radio" name="likert_relevance2" value="3">
+          Strongly focusses on this topic.
+        </li>
+        <li></li>
+        </ul>
+    </div>
+
+    <div id="relevance3">
+      <label class="statement">Is the System Summary 3 relevant to the topic <i>{{ review_title }}</i>?</label>
+        <ul class='likert'>
+        <li></li>
+        <li>
+          <input type="radio" name="likert_relevance3" value="1">
+           Mostly off topic (does not seem to address the key question).
+        </li>
+        <li>
+          <input type="radio" name="likert_relevance3" value="2">
+          Moderately on topic, but contains seemingly irrelevant information as well.
+        </li>
+        <li>
+          <input type="radio" name="likert_relevance3" value="3">
+          Strongly focusses on this topic.
+        </li>
+        <li></li>
+        </ul>
+    </div>
+
+    <div id="relevance4">
+      <label class="statement">Is the System Summary 4 relevant to the topic <i>{{ review_title }}</i>?</label>
+        <ul class='likert'>
+        <li></li>
+        <li>
+          <input type="radio" name="likert_relevance4" value="1">
+           Mostly off topic (does not seem to address the key question).
+        </li>
+        <li>
+          <input type="radio" name="likert_relevance4" value="2">
+          Moderately on topic, but contains seemingly irrelevant information as well.
+        </li>
+        <li>
+          <input type="radio" name="likert_relevance4" value="3">
           Strongly focusses on this topic.
         </li>
         <li></li>
@@ -81,84 +288,337 @@
 
     <div id="direction">
       <label class="statement">In the reference summary, characterize the authors' conclusion regarding the comparative effect of the main intervention(s) of interest, with respect to the outcome(s) summarized here. The summary concludes that the main intervention(s) ...</label>
-        <ul class='likert'>
+
+        <div>
+          <label class="statement">The SUMMARY 1 concludes that the main intervention(s) ...</label>
+          <ul class='likert'>
         <!-- <li></li> -->
- 
-        <li>
-          <input type="radio" name="likert_direction" value="-1">
-            Was harmful.
-        </li>
+    
+            <li>
+              <input type="radio" name="likert_direction1" value="-1">
+                Was harmful.
+            </li>
 
-        <li>
-          <input type="radio" name="likert_direction" value="0">
-          Had no effect.
-        </li>
+            <li>
+              <input type="radio" name="likert_direction1" value="0">
+              Had no effect.
+            </li>
+            
+            <li>
+              <input type="radio" name="likert_direction1" value="1">
+            Was beneficial. 
+            </li>
+            
+            <li>
+              <input type="radio" name="likert_direction1" value="2">
+            Could not come to a conclusion due to a lack of relevant evidence.
+            </li>
+
+          </ul>
+
+        </div>
+
+        <div>
+          <label class="statement"> The SUMMARY 2 concludes that the main intervention(s) ...</label>
+          <ul class='likert'>
+          <!-- <li></li> -->
+          
+              <li>
+                <input type="radio" name="likert_direction2" value="-1">
+                  Was harmful.
+              </li>
+      
+              <li>
+                <input type="radio" name="likert_direction2" value="0">
+                Had no effect.
+              </li>
+              
+              <li>
+                <input type="radio" name="likert_direction2" value="1">
+              Was beneficial. 
+              </li>
+              
+              <li>
+                <input type="radio" name="likert_direction2" value="2">
+              Could not come to a conclusion due to a lack of relevant evidence.
+              </li>
+  
+            </ul>
+        </div>
+        <div>
+          <label class="statement"> The SUMMARY 3 concludes that the main intervention(s) ...</label>
+          <ul class='likert'>
+          <!-- <li></li> -->
+          
+              <li>
+                <input type="radio" name="likert_direction3" value="-1">
+                  Was harmful.
+              </li>
+      
+              <li>
+                <input type="radio" name="likert_direction3" value="0">
+                Had no effect.
+              </li>
+              
+              <li>
+                <input type="radio" name="likert_direction3" value="1">
+              Was beneficial. 
+              </li>
+              
+              <li>
+                <input type="radio" name="likert_direction3" value="2">
+              Could not come to a conclusion due to a lack of relevant evidence.
+              </li>
+  
+            </ul>
+        </div>
+        <div>
+          <label class="statement"> The SUMMARY 4 concludes that the main intervention(s) ...</label>
+          <ul class='likert'>
+          <!-- <li></li> -->
+          
+              <li>
+                <input type="radio" name="likert_direction4" value="-1">
+                  Was harmful.
+              </li>
+      
+              <li>
+                <input type="radio" name="likert_direction4" value="0">
+                Had no effect.
+              </li>
+              
+              <li>
+                <input type="radio" name="likert_direction4" value="1">
+              Was beneficial. 
+              </li>
+              
+              <li>
+                <input type="radio" name="likert_direction4" value="2">
+              Could not come to a conclusion due to a lack of relevant evidence.
+              </li>
+  
+            </ul>
+        </div>
+
         
-        <li>
-          <input type="radio" name="likert_direction" value="1">
-         Was beneficial. 
-        </li>
-        
-        <li></li>
 
-        <li>
-          <input type="radio" name="likert_direction" value="2">
-         Could not come to a conclusion due to a lack of relevant evidence.
-        </li>
-
-        <li></li>
-        </ul>
+          
     </div>
 
     <div id="facts">
-      <label class="statement">Now we ask that you assess the factuality of the system summary text, with reference to the assessment you made above regarding the key findings reported in the manually written summary. The system summary ... </label>
+      <label class="statement">Now we ask that you assess the factuality of the system summary text, with reference to the assessment you made above regarding the key findings reported in the manually written summary.  </label>
+
+      <div>
+        <label class = 'statement'> The system SUMMARY 1 ... </label>
+      
         <ul class='likert'>
-        <li>
-          <input type="radio" id="test_likert" name="likert_facts" value="1">
-          Strongly disagrees with or contradicts the reference summary.
-        </li>
-        <li>
-          <input type="radio" name="likert_facts" value="2">
-          Moderately disagrees with the reference summary.
-        </li>
-        <li>
-          <input type="radio" name="likert_facts" value="3">
-          Partially agrees and partially disagrees with the reference summary.
-        </li>
-        <li>
-          <input type="radio" name="likert_facts" value="4">
-          Moderately agrees with the reference summary.
-        </li>
-        <li>
-          <input type="radio" name="likert_facts" value="5">
-          Strongly agrees with reference summary.
-        </li>
-      </ul>
+            <li>
+              <input type="radio" id="test_likert" name="likert_facts1" value="1">
+              Strongly disagrees with or contradicts the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts1" value="2">
+              Moderately disagrees with the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts1" value="3">
+              Partially agrees and partially disagrees with the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts1" value="4">
+              Moderately agrees with the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts1" value="5">
+              Strongly agrees with reference summary.
+            </li>
+        </ul>
+      </div>
+
+      <div>
+        <label class = 'statement'> The system SUMMARY 2 ... </label>
+      
+        <ul class='likert'>
+            <li>
+              <input type="radio" id="test_likert" name="likert_facts2" value="1">
+              Strongly disagrees with or contradicts the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts2" value="2">
+              Moderately disagrees with the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts2" value="3">
+              Partially agrees and partially disagrees with the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts2" value="4">
+              Moderately agrees with the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts2" value="5">
+              Strongly agrees with reference summary.
+            </li>
+        </ul>
+      </div>
+
+      <div>
+        <label class = 'statement'> The system SUMMARY 3 ... </label>
+      
+        <ul class='likert'>
+            <li>
+              <input type="radio" id="test_likert" name="likert_facts1" value="1">
+              Strongly disagrees with or contradicts the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts3" value="2">
+              Moderately disagrees with the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts3" value="3">
+              Partially agrees and partially disagrees with the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts3" value="4">
+              Moderately agrees with the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts3" value="5">
+              Strongly agrees with reference summary.
+            </li>
+        </ul>
+      </div>
+
+      <div>
+        <label class = 'statement'> The system SUMMARY 4 ... </label>
+      
+        <ul class='likert'>
+            <li>
+              <input type="radio" id="test_likert" name="likert_facts4" value="1">
+              Strongly disagrees with or contradicts the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts4" value="2">
+              Moderately disagrees with the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts4" value="3">
+              Partially agrees and partially disagrees with the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts4" value="4">
+              Moderately agrees with the reference summary.
+            </li>
+            <li>
+              <input type="radio" name="likert_facts4" value="5">
+              Strongly agrees with reference summary.
+            </li>
+        </ul>
+      </div>
+
     </div>
     
 
 
-    <div id = "semantic-plausibility">
-        <label class="statement">Now we would now like you to assess the "semantic plausibility" of the text (without regard for the reference review or source abstracts). This text is ...</label>
+    <div id = "semantic-plausibility1">
+        <label class="statement">Now we would now like you to assess the "semantic plausibility" of Summary 1 (without regard for the reference review or source abstracts). This text is ...</label>
         <ul class='likert'>
           <li>
-            <input type="radio" name="likert_fluency" value="1">
+            <input type="radio" name="likert_fluency1" value="1">
             Very difficult to understand; clearly not written by a human.
           </li>
           <li>
-            <input type="radio" name="likert_fluency" value="2">
+            <input type="radio" name="likert_fluency1" value="2">
             Mostly understandable but not very plausible: It contradicts itself and/or contains blatently untrue or incoherent statements.
           </li>
           <li>
-            <input type="radio" name="likert_fluency" value="3">
+            <input type="radio" name="likert_fluency1" value="3">
             Understandable, but contains some major language errors and/or semantic oddities.
           </li>
           <li>
-            <input type="radio" name="likert_fluency" value="4">
+            <input type="radio" name="likert_fluency1" value="4">
             Easy to understand, and seems mostly plausible and internally consistent. Contains some minor errors, but no major oddities or obviously incorrect text.
           </li>
           <li>
-            <input type="radio" name="likert_fluency" value="5">
+            <input type="radio" name="likert_fluency1" value="5">
+            I cannot readily distinguish this from a summary that might have been written by an expert reviewer.
+          </li>
+        </ul> 
+      </div>
+
+      <div id = "semantic-plausibility2">
+        <label class="statement">Now we would now like you to assess the "semantic plausibility" of Summary 2 (without regard for the reference review or source abstracts). This text is ...</label>
+        <ul class='likert'>
+          <li>
+            <input type="radio" name="likert_fluency2" value="1">
+            Very difficult to understand; clearly not written by a human.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency2" value="2">
+            Mostly understandable but not very plausible: It contradicts itself and/or contains blatently untrue or incoherent statements.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency2" value="3">
+            Understandable, but contains some major language errors and/or semantic oddities.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency2" value="4">
+            Easy to understand, and seems mostly plausible and internally consistent. Contains some minor errors, but no major oddities or obviously incorrect text.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency2" value="5">
+            I cannot readily distinguish this from a summary that might have been written by an expert reviewer.
+          </li>
+        </ul> 
+      </div>
+
+      <div id = "semantic-plausibility3">
+        <label class="statement">Now we would now like you to assess the "semantic plausibility" of Summary 3 (without regard for the reference review or source abstracts). This text is ...</label>
+        <ul class='likert'>
+          <li>
+            <input type="radio" name="likert_fluency3" value="1">
+            Very difficult to understand; clearly not written by a human.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency3" value="2">
+            Mostly understandable but not very plausible: It contradicts itself and/or contains blatently untrue or incoherent statements.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency3" value="3">
+            Understandable, but contains some major language errors and/or semantic oddities.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency3" value="4">
+            Easy to understand, and seems mostly plausible and internally consistent. Contains some minor errors, but no major oddities or obviously incorrect text.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency3" value="5">
+            I cannot readily distinguish this from a summary that might have been written by an expert reviewer.
+          </li>
+        </ul> 
+      </div>
+
+      <div id = "semantic-plausibility4">
+        <label class="statement">Now we would now like you to assess the "semantic plausibility" of Summary 4 (without regard for the reference review or source abstracts). This text is ...</label>
+        <ul class='likert'>
+          <li>
+            <input type="radio" name="likert_fluency4" value="1">
+            Very difficult to understand; clearly not written by a human.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency4" value="2">
+            Mostly understandable but not very plausible: It contradicts itself and/or contains blatently untrue or incoherent statements.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency4" value="3">
+            Understandable, but contains some major language errors and/or semantic oddities.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency4" value="4">
+            Easy to understand, and seems mostly plausible and internally consistent. Contains some minor errors, but no major oddities or obviously incorrect text.
+          </li>
+          <li>
+            <input type="radio" name="likert_fluency4" value="5">
             I cannot readily distinguish this from a summary that might have been written by an expert reviewer.
           </li>
         </ul> 
@@ -202,7 +662,7 @@
 </div>
     
   <p>You've provided {{ already_done }} labels!</p>
-  <p><!-- <b>System</b>: {{ system }} <--> <b>Identifier</b>: {{ uid }}</p>
+  <p><!-- <b>System</b>: {{ system }} <--> <b>Identifier</b>: {{ uuids }}</p>
 
 
 
