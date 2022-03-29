@@ -15,14 +15,12 @@
             var idx = $("#idx").val();
             
             if(idx == 0){
-              $("#reference-summary-box").show();
               $("#reference-summary-annotation").show();
               $("#summary-direction-faithfulness").hide();
               $("#buttons-back").hide();
             }
 
             else{
-              $("#reference-summary-box").hide();
               $("#reference-summary-annotation").hide();
             }
             
@@ -57,12 +55,8 @@
     <input type = "hidden" name = "predictions" value = "{{predictions}}">
     <input type = "hidden" name = "systems" value = "{{systems}}">
 
-    <label class="statement", style = "font-size: 16px;">In the reference summary, characterize the authors' conclusion regarding the comparative effect and faithfulness of the main intervention(s) of interest, with respect to the outcome(s) summarized here. </label>
-
-    <div id = 'reference-summary-box' style="border:2px dotted black; font-size: 14px; color:rgb(13, 4, 133)"> 
-      <h3 > Reference Summary  </h3>
-      See above
-    </div>
+    
+  
 
     <div id = 'reference-summary-annotation'>
       <label class="statement_type">Directionality </label>
@@ -95,6 +89,8 @@
     </div>
 
     <div id="summary-direction-faithfulness">
+      <label class="statement", style = "font-size: 16px;">In the reference summary, characterize the authors' conclusion regarding the comparative effect and faithfulness of the main intervention(s) of interest, with respect to the outcome(s) summarized here. </label>
+
         <div id="generated-summary" style="border:2px dotted black; font-size: 14px; color:rgb(13, 4, 133)">
             <h3> Summary {{idx}} </h3>
              {{ predictions[idx - 1] }}
@@ -118,7 +114,7 @@
               
               <li>
                 <input type="radio" name="likert_int_faithful" value="2">
-                Inconclusive.
+                Mostly equivalent to the interventions in the reference summary.
               </li>
   
             </ul>
@@ -139,7 +135,7 @@
               
               <li>
                 <input type="radio" name="likert_out_faithful" value="2">
-                Inconclusive.
+                Mostly equivalent to the outcomes in the reference summary.
               </li>
   
             </ul>

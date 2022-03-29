@@ -42,7 +42,7 @@ def add_references(reference_summary_path="../data/output_abs_title.csv"):
     # contain the targets -- here we ignore system specific output
     references_df = pd.read_csv(reference_summary_path)
     
-    references_df = preprocess_df(references_df)
+    references_df = preprocess_df(references_df)[:5]
     print(references_df)
 
     for i, reference_summary in references_df.iterrows():
@@ -121,7 +121,7 @@ def add_system_outputs(sys_id, data_path):
                                             '<outcomes>', '</outcomes>',
                                             '<punchline_text>', '</punchline_text>',
                                             '<study>', '</study>', "<sep>"]
-    system_df = pd.read_csv(data_path)
+    system_df = pd.read_csv(data_path)[:5]
     for i, generated_summary in system_df.iterrows():
         generated = generated_summary['Generated Summary']
         generated = [w for w in generated.split(' ') if w not in special_tokens]

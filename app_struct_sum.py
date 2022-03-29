@@ -14,7 +14,7 @@ def hello():
     return next()
 
 
-n_labels_per_doc = 4
+n_labels_per_doc = 6
 n_docs = 5
 def get_n_labels():
     with sqlite3.connect(db_path) as con:
@@ -28,8 +28,8 @@ def get_summaries_for_uid(cochrane_id) -> Tuple[str]:
         reference_summary, title = con.execute("""SELECT summary, title FROM target_summaries where cochrane_id='{}';""".format(cochrane_id)).fetchone()
         
         #get all summaries with the cochrane id 
-        rows = con.execute("""SELECT uuid, summary, system_id FROM generated_summaries where cochrane_id='{}';""".format(cochrane_id)).fetchall()
-        
+        rows = con.execute("""SELECT uuid, summary, system_id FROM generated_summaries where cochrane_id='{}' ORDER BY uuid;""".format(cochrane_id)).fetchall()
+        print(rows)
         ##shuffle them 
         shuffle(rows)
         
@@ -45,20 +45,72 @@ def get_summaries_for_uid(cochrane_id) -> Tuple[str]:
         
         return (reference_summary, title, systems, pred_summaries, uuids)
 
+def get_label_ordered_uids(uuids, con):
+    label_uids = con.execute("""SELECT label.generated_summary_id FROM label WHERE label.generated_summary_id in ({}, {}, {}, {}, {}) \
+        ORDER BY uuid""".format(uuids[0], uuids[1], uuids[2], uuids[3], uuids[4])).fetchall()
+    label_uids = [each[0] for each in sorted(set(label_uids), key=label_uids.index)] 
+    label_uids = label_uids + [each for each in uuids if each not in label_uids]
+    label_idx = [label_uids.index(each) for each in uuids]
+    return label_uids, label_idx
+
+def get_num_annotated(uuids, con):
+    labels = {'relevance': 0, 'fluency' : 0, 'direction': 0, 'int_faithful': 0, 'out_faithful':0 ,'factuality': 0}
+    for uid in uuids:
+        uid_labels = con.execute("""SELECT label_type FROM label WHERE {} == label.generated_summary_id""".format(uid)).fetchall()
+        label_types = [each[0].split('-')[-1].strip() for each in uid_labels]
+        for each in label_types:
+            labels[each] += 1
+    return labels
+def sort_idx(idx_list, l):
+    l = [each[1] for each in sorted(zip(idx_list, l))]
+    return l
 
 @app.route('/annotate/<uid>')
-def annotate(uid):
+def annotate(uid, con):
     # uid is a unique identifier for a *generated*
     # summary. 
     reference, review_title, systems, predictions, uuids = get_summaries_for_uid(uid)
 
     # this is terrible but right now we collect 3 annotations per doc, so... yeah
-    print(get_n_labels())
+    print(get_n_labels(), uuids)
     n_done = str(math.floor(int(get_n_labels()/(n_labels_per_doc * n_docs))))
 
-    return render_template('annotate_relevancy_fluency.html', idx = 0, uuids=uuids, review_title=review_title, 
-                            reference=reference, predictions=predictions, systems=systems,
-                            already_done=n_done)
+
+    label_uids, label_idx = get_label_ordered_uids(uuids, con)
+    label_idx = [label_uids.index(each) for each in uuids]
+    print(uuids, label_uids, sort_idx(label_idx, uuids))
+    
+    labels = get_num_annotated(uuids, con)
+    
+    print('RECORDED', labels)
+    
+    for k , v in labels.items():
+        if v < n_docs:
+            if k in ['relevance', 'fluency']:
+                return render_template('annotate_relevancy_fluency.html', idx = v, 
+                                        uuids=sort_idx(label_idx, uuids), 
+                                        review_title=review_title, 
+                                        reference=reference, 
+                                        predictions=sort_idx(label_idx, predictions), 
+                                        systems=sort_idx(label_idx, systems),
+                                        already_done=n_done)
+
+            elif k in ['direction', 'int_faithful', 'out_faithful' ]:
+                return render_template('annotate_direction.html', idx = v,
+                                        uuids=sort_idx(label_idx, uuids), 
+                                        review_title=review_title, 
+                                        reference=reference, 
+                                        predictions=sort_idx(label_idx, predictions), 
+                                        systems=sort_idx(label_idx, systems),
+                                        already_done=n_done)
+
+            return render_template('annotate_factuality.html',
+                                        uuids=sort_idx(label_idx, uuids), 
+                                        review_title=review_title, 
+                                        reference=reference, 
+                                        predictions=sort_idx(label_idx, predictions), 
+                                        systems=sort_idx(label_idx, systems),
+                                        already_done=n_done)
 
 
 def next():
@@ -80,7 +132,7 @@ def next():
         coch_id = con.execute("""SELECT cochrane_id FROM generated_summaries where uuid='{}';""".format(next_uuid[0])).fetchone()
         print(coch_id)
         
-        return annotate(coch_id[0])
+        return annotate(coch_id[0], con)
 
 def insert_label(con, uid, label_type, score):
     check_exist_str = "SELECT uuid from label where generated_summary_id = '{}' AND label_type ='{}'""".format(uid, label_type)
