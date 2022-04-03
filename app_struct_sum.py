@@ -1,21 +1,30 @@
 from typing import Dict, Tuple, Sequence
 
-from flask import Flask, jsonify, request, render_template, url_for, redirect
+from flask import Flask, jsonify, request, render_template, url_for, redirect, send_from_directory
 import json 
 import sqlite3
 from random import shuffle
 app = Flask(__name__)
 import math
-db_path = "data/summaries_test.db"  
 
+directory = 'data'
+database_name = 'summaries_test.db'
+db_path = '%s/%s'%(directory, database_name)
+n_labels_per_doc = 6
+n_docs = 5
 
 @app.route('/')
 def hello():
     return next()
 
 
-n_labels_per_doc = 6
-n_docs = 5
+@app.route("/download")
+def download_file():
+    return send_from_directory(
+        directory, database_name, as_attachment=True
+    )
+
+
 def get_n_labels():
     with sqlite3.connect(db_path) as con:
         q_str = """SELECT count(*) FROM label """
@@ -78,6 +87,7 @@ def annotate(uid, con):
 
     label_uids, label_idx = get_label_ordered_uids(uuids, con)
     label_idx = [label_uids.index(each) for each in uuids]
+    
     print(uuids, label_uids, sort_idx(label_idx, uuids))
     
     labels = get_num_annotated(uuids, con)
